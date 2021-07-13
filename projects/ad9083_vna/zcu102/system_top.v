@@ -54,9 +54,9 @@ module system_top (
   input                   sysref_p,
   input                   sysref_n,
 
-  inout                   pwdn,
-  inout                   rstb,
-  inout                   refsel,
+  output                  pwdn,
+  output                  rstb,
+  output                  refsel,
 
   inout                   spi_sdio,
   output                  spi_csn_clk,
@@ -168,29 +168,26 @@ module system_top (
   assign spi_adl5960_2_csn7 = spi_adl5960_2_csn_s[4];
   assign spi_adl5960_2_csn8 = spi_adl5960_2_csn_s[5];
 
-  // to be assigned on gpios
-  ////////////////////////////////////////////////////////////////////////////
-  // needs 5V, schematic respin(continuous current/transistors/remove)
-  assign adl5960_temp_1 = 1'b0;
-  assign adl5960_temp_2 = 1'b0;
-  assign adl5960_temp_3 = 1'b0;
-  assign adl5960_temp_4 = 1'b0;
-  assign adl5960_temp_5 = 1'b0;
-  assign adl5960_temp_6 = 1'b0;
-  assign adl5960_temp_7 = 1'b0;
-  assign adl5960_temp_8 = 1'b0;
+  assign adl5960_temp_7 = gpio_o[47];
+  assign adl5960_temp_6 = gpio_o[46];
+  assign adl5960_temp_5 = gpio_o[45];
+  assign adl5960_temp_4 = gpio_o[44];
+  assign adl5960_temp_3 = gpio_o[43];
+  assign adl5960_temp_2 = gpio_o[42];
+  assign adl5960_temp_1 = gpio_o[41];
+  assign gpio_sw3_v2 = gpio_o[40];
+  assign gpio_sw4_v2 = gpio_o[40];
+  assign gpio_sw3_v1 = gpio_o[39];
+  assign gpio_sw4_v1 = gpio_o[39];
+  assign gpio_sw2 = gpio_o[38];
+  assign gpio_sw1 = gpio_o[37];
+  assign gpio_sw0 = gpio_o[36];
+  assign adl5960x_sync1 = gpio_o[35];
+  assign refsel = gpio_o[34];
+  assign rstb = gpio_o[33];
+  assign pwdn = gpio_o[32];
 
-  // sw3_v1 short sw4 v1 and others
-  assign gpio_sw0 = 1'b0;
-  assign gpio_sw1 = 1'b0;
-  assign gpio_sw2 = 1'b0;
-  assign gpio_sw3_v1 = 1'b0;
-  assign gpio_sw3_v2 = 1'b0;
-  assign gpio_sw4_v1 = 1'b0;
-  assign gpio_sw4_v2 = 1'b0;
-  ////////////////////////////////////////////////////////////////////////////
-
-  assign gpio_i[94:36] = gpio_o[94:36];
+  assign gpio_i[94:32] = gpio_o[94:32];
   assign gpio_i[31:21] = gpio_o[31:21];
   assign gpio_i[ 7: 0] = gpio_o[ 7: 0];
 
@@ -198,15 +195,6 @@ module system_top (
   assign gpio_bd_o = gpio_o[7:0];
 
   // instantiations
-
-  ad_iobuf #(.DATA_WIDTH(4)) i_iobuf (
-    .dio_t ({gpio_t[35:32]}),
-    .dio_i ({gpio_o[35:32]}),
-    .dio_o ({gpio_i[35:32]}),
-    .dio_p ({adl5960x_sync1, // 35
-             refsel,         // 34
-             rstb,           // 33
-             pwdn}));        // 32
 
   IBUFDS IBUFDS_inst (
     .O(rx_ref_core_clk0_s),
