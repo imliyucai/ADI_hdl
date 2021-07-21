@@ -64,15 +64,15 @@ module system_top (
   output                  spi_clk,
 
   output                  spi_bus0_sck,
-  input                   spi_bus0_sdi,
-  output                  spi_bus0_sdo,
+  output                  spi_bus0_sdi,
+  input                   spi_bus0_sdo,
   output                  spi_bus0_csn_f1,
   output                  spi_bus0_csn_f2,
   output                  spi_bus0_csn_sen,
 
   output                  spi_bus1_sck,
-  input                   spi_bus1_sdi,
-  output                  spi_bus1_sdo,
+  output                  spi_bus1_sdi,
+  input                   spi_bus1_sdo,
   output                  spi_bus1_csn_dat1,
   output                  spi_bus1_csn_dat2,
 
@@ -80,11 +80,11 @@ module system_top (
   inout                   spi_adl5960_1_sdio,
   output                  spi_adl5960_1_csn1,
   output                  spi_adl5960_1_csn2,
+  output                  spi_adl5960_1_csn3,
+  output                  spi_adl5960_1_csn4,
 
   output                  spi_adl5960_2_sck,
   inout                   spi_adl5960_2_sdio,
-  output                  spi_adl5960_1_csn3,
-  output                  spi_adl5960_1_csn4,
   output                  spi_adl5960_2_csn5,
   output                  spi_adl5960_2_csn6,
   output                  spi_adl5960_2_csn7,
@@ -159,14 +159,14 @@ module system_top (
   assign spi_adl5960_1_sck = spi_adl5960_1_clk_s;
   assign spi_adl5960_1_csn1 = spi_adl5960_1_csn_s[0];
   assign spi_adl5960_1_csn2 = spi_adl5960_1_csn_s[1];
+  assign spi_adl5960_1_csn3 = spi_adl5960_1_csn_s[2];
+  assign spi_adl5960_1_csn4 = spi_adl5960_1_csn_s[3];
 
   assign spi_adl5960_2_sck = spi_adl5960_2_clk_s;
-  assign spi_adl5960_2_csn3 = spi_adl5960_2_csn_s[0];
-  assign spi_adl5960_2_csn4 = spi_adl5960_2_csn_s[1];
-  assign spi_adl5960_2_csn5 = spi_adl5960_2_csn_s[2];
-  assign spi_adl5960_2_csn6 = spi_adl5960_2_csn_s[3];
-  assign spi_adl5960_2_csn7 = spi_adl5960_2_csn_s[4];
-  assign spi_adl5960_2_csn8 = spi_adl5960_2_csn_s[5];
+  assign spi_adl5960_2_csn5 = spi_adl5960_2_csn_s[0];
+  assign spi_adl5960_2_csn6 = spi_adl5960_2_csn_s[1];
+  assign spi_adl5960_2_csn7 = spi_adl5960_2_csn_s[2];
+  assign spi_adl5960_2_csn8 = spi_adl5960_2_csn_s[3];
 
   assign adl5960_temp_7 = gpio_o[47];
   assign adl5960_temp_6 = gpio_o[46];
@@ -272,17 +272,17 @@ module system_top (
     .spi0_csn (spi0_csn),
     .spi0_miso (spi0_miso),
     .spi0_mosi (spi0_mosi),
-    .spi1_csn (spi_bus0_cs),
-    .spi1_miso (spi_bus0_sdi),
-    .spi1_mosi (spi_bus0_sdo),
+    .spi1_csn (spi_bus0_csn),
+    .spi1_miso (spi_bus0_sdo),
+    .spi1_mosi (spi_bus0_sdi),
     .spi1_sclk (spi_bus0_sck),
     .spi_bus1_csn_i (spi_bus1_csn),
     .spi_bus1_csn_o (spi_bus1_csn),
     .spi_bus1_clk_i (spi_bus1_sck),
     .spi_bus1_clk_o (spi_bus1_sck),
-    .spi_bus1_sdo_i (spi_bus1_sdo),
-    .spi_bus1_sdo_o (spi_bus1_sdo),
-    .spi_bus1_sdi_i (spi_bus1_sdi),
+    .spi_bus1_sdo_i (spi_bus1_sdi),
+    .spi_bus1_sdo_o (spi_bus1_sdi),
+    .spi_bus1_sdi_i (spi_bus1_sdo),
     .spi_adl5960_1_csn_i (spi_adl5960_1_csn_s),
     .spi_adl5960_1_csn_o (spi_adl5960_1_csn_s),
     .spi_adl5960_1_clk_i (spi_adl5960_1_clk_s),

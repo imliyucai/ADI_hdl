@@ -2,19 +2,23 @@
 source $ad_hdl_dir/library/jesd204/scripts/jesd204.tcl
 
 # RX parameters
-set RX_NUM_OF_LANES 4        ; # L
-set RX_NUM_OF_CONVERTERS 16  ; # M
+set RX_NUM_OF_LANES 1        ; # L
+set RX_NUM_OF_CONVERTERS 32  ; # M
 set RX_SAMPLES_PER_FRAME 1   ; # S
 set RX_SAMPLE_WIDTH 16       ; # N/NP
-set RX_SAMPLES_PER_CHANNEL 1 ; # L * 32 / (M * N)
 
-# fifo size should provide 64ks/ch
-# (256*2^16)/16[ch]/16[N/NP]=64ks
+set RX_OCTETS_PER_FRAME [expr $RX_NUM_OF_CONVERTERS * $RX_SAMPLES_PER_FRAME * $RX_SAMPLE_WIDTH / (8*$RX_NUM_OF_LANES)] ; # F = M * S * N' / (8 * L)
+set DPW [expr max(4,$RX_OCTETS_PER_FRAME)] ;# max(4,F)
+
+set RX_SAMPLES_PER_CHANNEL [expr $RX_NUM_OF_LANES * 8 * $DPW / ($RX_NUM_OF_CONVERTERS * $RX_SAMPLE_WIDTH)] ; # L * 8* DPW / (M * N')
+
+# fifo size should provide 32ks/ch
+# (512*2^15)/32[ch]/16[N/NP]=32ks
 
 set adc_fifo_name axi_ad9083_fifo
-set adc_data_width 256
-set adc_dma_data_width 256
-set adc_fifo_address_width 16
+set adc_data_width [expr $RX_NUM_OF_LANES * 8 * $DPW]
+set adc_dma_data_width $adc_data_width
+set adc_fifo_address_width 15
 
 # adc peripherals
 # rx_out_clk = ref_clk
@@ -30,7 +34,7 @@ ad_ip_instance axi_adxcvr axi_ad9083_rx_xcvr [list \
 
 adi_axi_jesd204_rx_create axi_ad9083_rx_jesd $RX_NUM_OF_LANES
 ad_ip_parameter axi_ad9083_rx_jesd/rx CONFIG.SYSREF_IOB false
-ad_ip_parameter axi_ad9083_rx_jesd/rx CONFIG.TPL_DATA_PATH_WIDTH 8
+ad_ip_parameter axi_ad9083_rx_jesd/rx CONFIG.TPL_DATA_PATH_WIDTH $DPW
 
 ad_ip_instance util_cpack2 util_ad9083_rx_cpack [list \
   NUM_OF_CHANNELS $RX_NUM_OF_CONVERTERS \
@@ -55,7 +59,7 @@ ad_ip_instance axi_dmac axi_ad9083_rx_dma [list \
   AXI_SLICE_DEST 1 \
   AXI_SLICE_SRC 1 \
   DMA_LENGTH_WIDTH 24 \
-  DMA_DATA_WIDTH_DEST $adc_dma_data_width \
+  DMA_DATA_WIDTH_DEST 128 \
   DMA_DATA_WIDTH_SRC $adc_dma_data_width \
 ]
 
@@ -106,12 +110,14 @@ ad_ip_parameter axi_spi_bus1 CONFIG.C_SCK_RATIO 8
 ad_ip_instance axi_quad_spi axi_spi_adl5960_1
 ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_USE_STARTUP 0
 ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_NUM_SS_BITS 2
-ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_SCK_RATIO 8
+ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_SCK_RATIO 16
+ad_ip_parameter axi_spi_adl5960_1 CONFIG.Multiples16 8
 
 ad_ip_instance axi_quad_spi axi_spi_adl5960_2
 ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_USE_STARTUP 0
 ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_NUM_SS_BITS 6
-ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_SCK_RATIO 8
+ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_SCK_RATIO 16
+ad_ip_parameter axi_spi_adl5960_2 CONFIG.Multiples16 8
 
 # xcvr interfaces
 
@@ -249,3 +255,8 @@ ad_cpu_interrupt ps-11 mb-14 axi_spi_adl5960_2/ip2intc_irpt
 ad_cpu_interrupt ps-12 mb-13 axi_ad9083_rx_jesd/irq
 ad_cpu_interrupt ps-13 mb-12 axi_ad9083_rx_dma/irq
 
+# Create dummy outputs for unused Rx lanes
+for {set i $RX_NUM_OF_LANES} {$i < 4} {incr i} {
+  create_bd_port -dir I rx_data_${i}_n
+  create_bd_port -dir I rx_data_${i}_p
+}
