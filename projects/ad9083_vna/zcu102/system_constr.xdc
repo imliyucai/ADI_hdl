@@ -10,17 +10,17 @@ set_property  -dict {PACKAGE_PIN  G7}                        [get_ports ref_clk0
 
 set_property         -dict {PACKAGE_PIN  H2}                 [get_ports rx_data_p[0]]     ; ## C6  FMC_HPC0_DP0_M2C_P
 set_property         -dict {PACKAGE_PIN  H1}                 [get_ports rx_data_n[0]]     ; ## C7  FMC_HPC0_DP0_M2C_N
-set_property  -quiet -dict {PACKAGE_PIN  J4}                 [get_ports rx_data_p[1]]     ; ## J2  FMC_HPC0_DP1_M2C_P
-set_property  -quiet -dict {PACKAGE_PIN  J3}                 [get_ports rx_data_n[1]]     ; ## J3  FMC_HPC0_DP1_M2C_N
-set_property  -quiet -dict {PACKAGE_PIN  F2}                 [get_ports rx_data_p[2]]     ; ## J6  FMC_HPC0_DP2_M2C_P
-set_property  -quiet -dict {PACKAGE_PIN  F1}                 [get_ports rx_data_n[2]]     ; ## J7  FMC_HPC0_DP2_M2C_N
-set_property  -quiet -dict {PACKAGE_PIN  K2}                 [get_ports rx_data_p[3]]     ; ## J10 FMC_HPC0_DP3_M2C_P
-set_property  -quiet -dict {PACKAGE_PIN  K1}                 [get_ports rx_data_n[3]]     ; ## J11 FMC_HPC0_DP3_M2C_N
+set_property  -quiet -dict {PACKAGE_PIN  J4}                 [get_ports rx_data_p[1]]     ; ## A2  FMC_HPC0_DP1_M2C_P
+set_property  -quiet -dict {PACKAGE_PIN  J3}                 [get_ports rx_data_n[1]]     ; ## A3  FMC_HPC0_DP1_M2C_N
+set_property  -quiet -dict {PACKAGE_PIN  F2}                 [get_ports rx_data_p[2]]     ; ## A6  FMC_HPC0_DP2_M2C_P
+set_property  -quiet -dict {PACKAGE_PIN  F1}                 [get_ports rx_data_n[2]]     ; ## A7  FMC_HPC0_DP2_M2C_N
+set_property  -quiet -dict {PACKAGE_PIN  K2}                 [get_ports rx_data_p[3]]     ; ## A10 FMC_HPC0_DP3_M2C_P
+set_property  -quiet -dict {PACKAGE_PIN  K1}                 [get_ports rx_data_n[3]]     ; ## A11 FMC_HPC0_DP3_M2C_N
 
 set_property  -dict {PACKAGE_PIN  U4  IOSTANDARD LVCMOS18}   [get_ports spi_csn_clk]      ; ## H14 FMC_HPC0_LA07_N
 set_property  -dict {PACKAGE_PIN  V2  IOSTANDARD LVCMOS18}   [get_ports spi_csn_adc]      ; ## H7  FMC_HPC0_LA02_P
-set_property  -dict {PACKAGE_PIN  AB4 IOSTANDARD LVCMOS18}   [get_ports spi_clk]          ; ## G8  FMC_HPC0_LA01_CC_P
-set_property  -dict {PACKAGE_PIN  AC4 IOSTANDARD LVCMOS18}   [get_ports spi_sdio]         ; ## G9  FMC_HPC0_LA01_CC_N
+set_property  -dict {PACKAGE_PIN  AB4 IOSTANDARD LVCMOS18}   [get_ports spi_clk]          ; ## D8  FMC_HPC0_LA01_CC_P
+set_property  -dict {PACKAGE_PIN  AC4 IOSTANDARD LVCMOS18}   [get_ports spi_sdio]         ; ## D9  FMC_HPC0_LA01_CC_N
 
 set_property  -dict {PACKAGE_PIN  V1  IOSTANDARD LVCMOS18}   [get_ports pwdn]             ; ## H8  FMC_HPC0_LA02_N
 set_property  -dict {PACKAGE_PIN  U5  IOSTANDARD LVCMOS18}   [get_ports rstb]             ; ## H13 FMC_HPC0_LA07_P
