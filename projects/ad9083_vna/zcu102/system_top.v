@@ -131,12 +131,12 @@ module system_top (
   wire         [ 2:0]     spi_bus0_csn;
   wire         [ 1:0]     spi_bus1_csn;
 
-  wire         [ 1:0]     spi_adl5960_1_csn_s;
+  wire         [ 3:0]     spi_adl5960_1_csn_s;
   wire                    spi_adl5960_1_clk_s;
   wire                    spi_adl5960_1_mosi_s;
   wire                    spi_adl5960_1_miso_s;
 
-  wire         [ 5:0]     spi_adl5960_2_csn_s;
+  wire         [ 3:0]     spi_adl5960_2_csn_s;
   wire                    spi_adl5960_2_clk_s;
   wire                    spi_adl5960_2_mosi_s;
   wire                    spi_adl5960_2_miso_s;
@@ -223,7 +223,7 @@ module system_top (
     .spi_dir());
 
   ad_3w_spi #(
-    .NUM_OF_SLAVES(2))
+    .NUM_OF_SLAVES(4))
     i_spi_adl5960_1 (
     .spi_csn(spi_adl5960_1_csn_s),
     .spi_clk(spi_adl5960_1_clk_s),
@@ -233,7 +233,7 @@ module system_top (
     .spi_dir());
 
   ad_3w_spi #(
-    .NUM_OF_SLAVES(6))
+    .NUM_OF_SLAVES(4))
     i_spi_adl5960_2 (
     .spi_csn(spi_adl5960_2_csn_s),
     .spi_clk(spi_adl5960_2_clk_s),
