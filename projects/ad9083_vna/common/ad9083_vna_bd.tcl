@@ -109,13 +109,13 @@ ad_ip_parameter axi_spi_bus1 CONFIG.C_SCK_RATIO 8
 
 ad_ip_instance axi_quad_spi axi_spi_adl5960_1
 ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_USE_STARTUP 0
-ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_NUM_SS_BITS 2
+ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_NUM_SS_BITS 4
 ad_ip_parameter axi_spi_adl5960_1 CONFIG.C_SCK_RATIO 16
 ad_ip_parameter axi_spi_adl5960_1 CONFIG.Multiples16 8
 
 ad_ip_instance axi_quad_spi axi_spi_adl5960_2
 ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_USE_STARTUP 0
-ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_NUM_SS_BITS 6
+ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_NUM_SS_BITS 4
 ad_ip_parameter axi_spi_adl5960_2 CONFIG.C_SCK_RATIO 16
 ad_ip_parameter axi_spi_adl5960_2 CONFIG.Multiples16 8
 
