@@ -20,6 +20,43 @@ set adc_data_width [expr $RX_NUM_OF_LANES * 8 * $DPW]
 set adc_dma_data_width $adc_data_width
 set adc_fifo_address_width 15
 
+set rx_ref_clk rx_ref_clk_0
+
+# create interfaces
+
+create_bd_port -dir O -from 1 -to 0 spi_bus1_csn_o
+create_bd_port -dir I -from 1 -to 0 spi_bus1_csn_i
+create_bd_port -dir I spi_bus1_clk_i
+create_bd_port -dir O spi_bus1_clk_o
+create_bd_port -dir I spi_bus1_sdo_i
+create_bd_port -dir O spi_bus1_sdo_o
+create_bd_port -dir I spi_bus1_sdi_i
+
+create_bd_port -dir O -from 3 -to 0 spi_adl5960_1_csn_o
+create_bd_port -dir I -from 3 -to 0 spi_adl5960_1_csn_i
+create_bd_port -dir I spi_adl5960_1_clk_i
+create_bd_port -dir O spi_adl5960_1_clk_o
+create_bd_port -dir I spi_adl5960_1_sdo_i
+create_bd_port -dir O spi_adl5960_1_sdo_o
+create_bd_port -dir I spi_adl5960_1_sdi_i
+
+create_bd_port -dir O -from 3 -to 0 spi_adl5960_2_csn_o
+create_bd_port -dir I -from 3 -to 0 spi_adl5960_2_csn_i
+create_bd_port -dir I spi_adl5960_2_clk_i
+create_bd_port -dir O spi_adl5960_2_clk_o
+create_bd_port -dir I spi_adl5960_2_sdo_i
+create_bd_port -dir O spi_adl5960_2_sdo_o
+create_bd_port -dir I spi_adl5960_2_sdi_i
+
+create_bd_port -dir I $rx_ref_clk
+create_bd_port -dir I rx_core_clk_0
+
+# Create dummy outputs for unused Rx lanes
+for {set i $RX_NUM_OF_LANES} {$i < 4} {incr i} {
+  create_bd_port -dir I rx_data_${i}_n
+  create_bd_port -dir I rx_data_${i}_p
+}
+
 # adc peripherals
 # rx_out_clk = ref_clk
 # qpll0 selected
@@ -121,11 +158,6 @@ ad_ip_parameter axi_spi_adl5960_2 CONFIG.Multiples16 8
 
 # xcvr interfaces
 
-set rx_ref_clk     rx_ref_clk_0
-
-create_bd_port -dir I $rx_ref_clk
-create_bd_port -dir I rx_core_clk_0
-
 ad_connect  $sys_cpu_resetn util_ad9083_xcvr/up_rstn
 ad_connect  $sys_cpu_clk util_ad9083_xcvr/up_clk
 
@@ -145,14 +177,6 @@ ad_xcvrpll  axi_ad9083_rx_xcvr/up_pll_rst util_ad9083_xcvr/up_qpll_rst_*
 
 # spi interface
 
-create_bd_port -dir O -from 1 -to 0 spi_bus1_csn_o
-create_bd_port -dir I -from 1 -to 0 spi_bus1_csn_i
-create_bd_port -dir I spi_bus1_clk_i
-create_bd_port -dir O spi_bus1_clk_o
-create_bd_port -dir I spi_bus1_sdo_i
-create_bd_port -dir O spi_bus1_sdo_o
-create_bd_port -dir I spi_bus1_sdi_i
-
 ad_connect  sys_cpu_clk  axi_spi_bus1/ext_spi_clk
 ad_connect  spi_bus1_csn_i  axi_spi_bus1/ss_i
 ad_connect  spi_bus1_csn_o  axi_spi_bus1/ss_o
@@ -162,14 +186,6 @@ ad_connect  spi_bus1_sdo_i  axi_spi_bus1/io0_i
 ad_connect  spi_bus1_sdo_o  axi_spi_bus1/io0_o
 ad_connect  spi_bus1_sdi_i  axi_spi_bus1/io1_i
 
-create_bd_port -dir O -from 1 -to 0 spi_adl5960_1_csn_o
-create_bd_port -dir I -from 1 -to 0 spi_adl5960_1_csn_i
-create_bd_port -dir I spi_adl5960_1_clk_i
-create_bd_port -dir O spi_adl5960_1_clk_o
-create_bd_port -dir I spi_adl5960_1_sdo_i
-create_bd_port -dir O spi_adl5960_1_sdo_o
-create_bd_port -dir I spi_adl5960_1_sdi_i
-
 ad_connect  sys_cpu_clk  axi_spi_adl5960_1/ext_spi_clk
 ad_connect  spi_adl5960_1_csn_i  axi_spi_adl5960_1/ss_i
 ad_connect  spi_adl5960_1_csn_o  axi_spi_adl5960_1/ss_o
@@ -178,14 +194,6 @@ ad_connect  spi_adl5960_1_clk_o  axi_spi_adl5960_1/sck_o
 ad_connect  spi_adl5960_1_sdo_i  axi_spi_adl5960_1/io0_i
 ad_connect  spi_adl5960_1_sdo_o  axi_spi_adl5960_1/io0_o
 ad_connect  spi_adl5960_1_sdi_i  axi_spi_adl5960_1/io1_i
-
-create_bd_port -dir O -from 5 -to 0 spi_adl5960_2_csn_o
-create_bd_port -dir I -from 5 -to 0 spi_adl5960_2_csn_i
-create_bd_port -dir I spi_adl5960_2_clk_i
-create_bd_port -dir O spi_adl5960_2_clk_o
-create_bd_port -dir I spi_adl5960_2_sdo_i
-create_bd_port -dir O spi_adl5960_2_sdo_o
-create_bd_port -dir I spi_adl5960_2_sdi_i
 
 ad_connect  sys_cpu_clk  axi_spi_adl5960_2/ext_spi_clk
 ad_connect  spi_adl5960_2_csn_i  axi_spi_adl5960_2/ss_i
@@ -234,7 +242,6 @@ ad_cpu_interconnect 0x44A00000 rx_ad9083_tpl_core
 ad_cpu_interconnect 0x44A60000 axi_ad9083_rx_xcvr
 ad_cpu_interconnect 0x44AA0000 axi_ad9083_rx_jesd
 ad_cpu_interconnect 0x7c400000 axi_ad9083_rx_dma
-
 ad_cpu_interconnect 0x48000000 axi_spi_bus1
 ad_cpu_interconnect 0x48100000 axi_spi_adl5960_1
 ad_cpu_interconnect 0x48200000 axi_spi_adl5960_2
@@ -254,9 +261,3 @@ ad_cpu_interrupt ps-10 mb-15 axi_spi_adl5960_1/ip2intc_irpt
 ad_cpu_interrupt ps-11 mb-14 axi_spi_adl5960_2/ip2intc_irpt
 ad_cpu_interrupt ps-12 mb-13 axi_ad9083_rx_jesd/irq
 ad_cpu_interrupt ps-13 mb-12 axi_ad9083_rx_dma/irq
-
-# Create dummy outputs for unused Rx lanes
-for {set i $RX_NUM_OF_LANES} {$i < 4} {incr i} {
-  create_bd_port -dir I rx_data_${i}_n
-  create_bd_port -dir I rx_data_${i}_p
-}
