@@ -86,4 +86,14 @@ create_clock -period 8 -name rx_ref_clk2 [get_ports glblclk_p]
 set_input_delay -clock [get_clocks rx_ref_clk2] [get_property PERIOD [get_clocks rx_ref_clk2]] \
                 [get_ports -regexp -filter { NAME =~  ".*sysref.*" && DIRECTION == "IN" }]
 
+create_generated_clock -name clk_sck0  \
+  -source [get_pins i_system_wrapper/system_i/axi_spi_bus1/ext_spi_clk] \
+  -divide_by 2 [get_pins i_system_wrapper/system_i/axi_spi_bus1/sck_o]
 
+create_generated_clock -name clk_sck1  \
+  -source [get_pins i_system_wrapper/system_i/axi_spi_adl5960_1/ext_spi_clk] \
+  -divide_by 2 [get_pins i_system_wrapper/system_i/axi_spi_adl5960_1/sck_o]
+
+create_generated_clock -name clk_sck2  \
+  -source [get_pins i_system_wrapper/system_i/axi_spi_adl5960_2/ext_spi_clk] \
+  -divide_by 2 [get_pins i_system_wrapper/system_i/axi_spi_adl5960_2/sck_o]
