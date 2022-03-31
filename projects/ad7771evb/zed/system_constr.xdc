@@ -16,7 +16,7 @@ set_property  -dict {PACKAGE_PIN N22  IOSTANDARD LVCMOS25}  [get_ports spi_miso]
 
 set_property  -dict {PACKAGE_PIN L21  IOSTANDARD LVCMOS25}  [get_ports reset_n]         ; #RESET_B     LA06_P  
 set_property  -dict {PACKAGE_PIN P22  IOSTANDARD LVCMOS25}  [get_ports start_n]         ; #START_B     LA03_N 
-set_property  -dict {PACKAGE_PIN M21  IOSTANDARD LVCMOS25}  [get_ports sync_n]          ; #SYNC_IN_B   LA04_P 
+set_property  -dict {PACKAGE_PIN M21  IOSTANDARD LVCMOS25}  [get_ports sync_n]          ; #SYNC_IN_B   LA04_P SHORTED TO
 set_property  -dict {PACKAGE_PIN R19  IOSTANDARD LVCMOS25}  [get_ports alert]           ; #ALERT_B     LA10_P
 set_property  -dict {PACKAGE_PIN R20  IOSTANDARD LVCMOS25}  [get_ports sdp_convst]      ; #SDP_CONVST  LA09_P
 set_property  -dict {PACKAGE_PIN A22  IOSTANDARD LVCMOS25}  [get_ports gpio2]           ; #GPIO2       LA32_N 

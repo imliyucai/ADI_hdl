@@ -46,65 +46,26 @@ module axi_ad7771_if (
 
   // data path interface
 
-
   output                  adc_clk,
-  output  reg             adc_valid_0,
-  output  reg             adc_valid_1,
-  output  reg             adc_valid_2,
-  output  reg             adc_valid_3,
-  output  reg             adc_valid_4,
-  output  reg             adc_valid_5,
-  output  reg             adc_valid_6,
-  output  reg             adc_valid_7,
+  output                 adc_valid,
 
-  output                 adc_valid_pp,
-
-  output  reg [ 31:0]     adc_data_0,
-  output  reg [ 31:0]     adc_data_1,
-  output  reg [ 31:0]     adc_data_2,
-  output  reg [ 31:0]     adc_data_3,
-  output  reg [ 31:0]     adc_data_4,
-  output  reg [ 31:0]     adc_data_5,
-  output  reg [ 31:0]     adc_data_6,
-  output  reg [ 31:0]     adc_data_7);
+  output   [ 31:0]       adc_data_0,
+  output   [ 31:0]       adc_data_1,
+  output   [ 31:0]       adc_data_2,
+  output   [ 31:0]       adc_data_3,
+  output   [ 31:0]       adc_data_4,
+  output   [ 31:0]       adc_data_5,
+  output   [ 31:0]       adc_data_6,
+  output   [ 31:0]       adc_data_7);
 
   // internal registers
 
-  reg     [  1:0]   adc_status_8 = 'd0;
-  reg     [  2:0]   adc_status_7 = 'd0;
-  reg     [  2:0]   adc_status_6 = 'd0;
-  reg     [  2:0]   adc_status_5 = 'd0;
-  reg     [  2:0]   adc_status_4 = 'd0;
-  reg     [  2:0]   adc_status_3 = 'd0;
-  reg     [  2:0]   adc_status_2 = 'd0;
-  reg     [  2:0]   adc_status_1 = 'd0;
-  reg     [  2:0]   adc_status_0 = 'd0;
-  reg     [  4:0]   adc_status = 'd0;
-  reg     [ 63:0]   adc_crc_8 = 'd0;
-  reg     [  7:0]   adc_crc_mismatch_int = 'd0;
-  reg               adc_crc_valid = 'd0;
-  reg     [  7:0]   adc_crc_data = 'd0;
-  reg     [  7:0]   adc_crc_mismatch_8 = 'd0;
-  reg               adc_valid_int = 'd0;
-  reg     [ 31:0]   adc_data_int = 'd0;
-  reg               adc_enable_int = 'd0;
-  reg     [  7:0]   adc_ch_valid_d = 'd0;
-  reg     [255:0]   adc_ch_data_d0 = 'd0;
-  reg     [255:0]   adc_ch_data_d1 = 'd0;
-  reg     [255:0]   adc_ch_data_d2 = 'd0;
-  reg     [255:0]   adc_ch_data_d3 = 'd0;
-  reg     [255:0]   adc_ch_data_d4 = 'd0;
-  reg     [255:0]   adc_ch_data_d5 = 'd0;
-  reg     [255:0]   adc_ch_data_d6 = 'd0;
-  reg     [255:0]   adc_ch_data_d7 = 'd0;
-  reg               adc_ch_valid_0 = 'd0;
-  reg               adc_ch_valid_1 = 'd0;
-  reg               adc_ch_valid_2 = 'd0;
-  reg               adc_ch_valid_3 = 'd0;
-  reg               adc_ch_valid_4 = 'd0;
-  reg               adc_ch_valid_5 = 'd0;
-  reg               adc_ch_valid_6 = 'd0;
-  reg               adc_ch_valid_7 = 'd0;
+  reg               adc_ch_valid_0_1 = 'd0;
+  reg               adc_ch_valid_2_3 = 'd0;
+  reg               adc_ch_valid_4_5 = 'd0;
+  reg               adc_ch_valid_6_7 = 'd0;
+
+
   reg     [ 31:0]   adc_ch_data_0 = 'd0;
   reg     [ 31:0]   adc_ch_data_1 = 'd0;
   reg     [ 31:0]   adc_ch_data_2 = 'd0;
@@ -113,131 +74,91 @@ module axi_ad7771_if (
   reg     [ 31:0]   adc_ch_data_5 = 'd0;
   reg     [ 31:0]   adc_ch_data_6 = 'd0;
   reg     [ 31:0]   adc_ch_data_7 = 'd0;
-  reg               adc_ch_valid = 'd0;
+ 
   reg     [255:0]   adc_ch_data = 'd0;
   reg     [  8:0]   adc_cnt_p = 'd0;
   reg               adc_valid_p = 'd0;
   reg     [255:0]   adc_data_p = 'd0;
-  reg     [  7:0]   adc_data_d1 = 'd0;
-  reg     [  7:0]   adc_data_d2 = 'd0;
-  reg               adc_ready_d1 = 'd0;
-  reg               adc_ready = 'd0;
-  reg               adc_ready_d = 'd0;
-  reg               adc_valid_pp_s = 'd0;
 
+  reg    [ 31:0]   adc_data_0_s; 
+  reg    [ 31:0]   adc_data_1_s;
+  reg    [ 31:0]   adc_data_2_s;
+  reg    [ 31:0]   adc_data_3_s;
+  reg    [ 31:0]   adc_data_4_s;
+  reg    [ 31:0]   adc_data_5_s;
+  reg    [ 31:0]   adc_data_6_s;
+  reg    [ 31:0]   adc_data_7_s; 
+  reg    [ 3:0]    adc_data_valid='b0;
+  
+
+
+ 
   // internal signals
 
   wire              adc_cnt_enable_s;
-  wire    [  7:0]   adc_data_in_s;
   wire              adc_ready_in_s;
-  wire    [ 35:0]   adc_status_clr_s;
 
-assign adc_clk = clk_in;
-assign adc_ready_in_s = ready_in;
-assign adc_valid_pp = adc_valid_pp_s;
+  reg              adc_valid_s;
+
+
+
+  assign adc_clk = clk_in;
+  assign adc_ready_in_s = ready_in;
+  assign adc_valid = adc_valid_s;
+  assign adc_data_0 = adc_data_0_s;
+  assign adc_data_1 = adc_data_1_s;
+  assign adc_data_2 = adc_data_2_s;
+  assign adc_data_3 = adc_data_3_s;
+  assign adc_data_4 = adc_data_4_s;
+  assign adc_data_5 = adc_data_5_s;
+  assign adc_data_6 = adc_data_6_s;
+  assign adc_data_7 = adc_data_7_s;
+
   // data & status
 
- 
- 
   always @(posedge adc_clk) begin
-    
+    if (adc_ch_valid_0_1 == 1'b1) begin
+      adc_data_0_s <= adc_ch_data_0;
+      adc_data_1_s <= adc_ch_data_1;
+    end
    
-    if (adc_ch_valid_0 == 1'b1) begin
-      adc_data_0 <= adc_ch_data_0;
+    if (adc_ch_valid_2_3 == 1'b1) begin
+      adc_data_2_s <= adc_ch_data_2;
+      adc_data_3_s <= adc_ch_data_3;
     end
-    if (adc_ch_valid_1 == 1'b1) begin
-      adc_data_1 <= adc_ch_data_1;
+    if (adc_ch_valid_4_5 == 1'b1) begin
+      adc_data_4_s <= adc_ch_data_4;
+      adc_data_5_s <= adc_ch_data_5;
     end
-    if (adc_ch_valid_2 == 1'b1) begin
-      adc_data_2 <= adc_ch_data_2;
+    if (adc_ch_valid_6_7 == 1'b1) begin
+      adc_data_6_s <= adc_ch_data_6;
+      adc_data_7_s <= adc_ch_data_7;
     end
-    if (adc_ch_valid_3 == 1'b1) begin
-      adc_data_3 <= adc_ch_data_3;
-    end
-    if (adc_ch_valid_4 == 1'b1) begin
-      adc_data_4 <= adc_ch_data_4;
-    end
-    if (adc_ch_valid_5 == 1'b1) begin
-      adc_data_5 <= adc_ch_data_5;
-    end
-    if (adc_ch_valid_6 == 1'b1) begin
-      adc_data_6 <= adc_ch_data_6;
-    end
-    if (adc_ch_valid_7 == 1'b1) begin
-      adc_data_7 <= adc_ch_data_7;
-    end
-
-    adc_valid_0 <= adc_ch_valid_0;
-    adc_valid_1 <= adc_ch_valid_1;
-    adc_valid_2 <= adc_ch_valid_2;
-    adc_valid_3 <= adc_ch_valid_3;
-    adc_valid_4 <= adc_ch_valid_4;
-    adc_valid_5 <= adc_ch_valid_5;
-    adc_valid_6 <= adc_ch_valid_6;
-    adc_valid_7 <= adc_ch_valid_7;
-    
-    adc_valid_pp_s <= adc_valid_0 | adc_valid_1 | adc_valid_2 | adc_valid_3 |
-	            adc_valid_4 | adc_valid_5 | adc_valid_6 | adc_valid_7;
-   
+    adc_valid_s = adc_ch_valid_6_7;
   end
 
   // data (interleaving)
 
-
-  always @(posedge adc_clk) begin
-    adc_ch_valid_d <= {adc_ch_valid_d[6:0], adc_ch_valid};
-    adc_ch_data_d0[((32*0)+31):(32*0)] <= adc_ch_data[((32*0)+31):(32*0)];
-    adc_ch_data_d0[((32*7)+31):(32*1)] <= adc_ch_data_d0[((32*6)+31):(32*0)];
-    adc_ch_data_d1[((32*0)+31):(32*0)] <= adc_ch_data[((32*1)+31):(32*1)];
-    adc_ch_data_d1[((32*7)+31):(32*1)] <= adc_ch_data_d1[((32*6)+31):(32*0)];
-    adc_ch_data_d2[((32*0)+31):(32*0)] <= adc_ch_data[((32*2)+31):(32*2)];
-    adc_ch_data_d2[((32*7)+31):(32*1)] <= adc_ch_data_d2[((32*6)+31):(32*0)];
-    adc_ch_data_d3[((32*0)+31):(32*0)] <= adc_ch_data[((32*3)+31):(32*3)];
-    adc_ch_data_d3[((32*7)+31):(32*1)] <= adc_ch_data_d3[((32*6)+31):(32*0)];
-    adc_ch_data_d4[((32*0)+31):(32*0)] <= adc_ch_data[((32*4)+31):(32*4)];
-    adc_ch_data_d4[((32*7)+31):(32*1)] <= adc_ch_data_d4[((32*6)+31):(32*0)];
-    adc_ch_data_d5[((32*0)+31):(32*0)] <= adc_ch_data[((32*5)+31):(32*5)];
-    adc_ch_data_d5[((32*7)+31):(32*1)] <= adc_ch_data_d5[((32*6)+31):(32*0)];
-    adc_ch_data_d6[((32*0)+31):(32*0)] <= adc_ch_data[((32*6)+31):(32*6)];
-    adc_ch_data_d6[((32*7)+31):(32*1)] <= adc_ch_data_d6[((32*6)+31):(32*0)];
-    adc_ch_data_d7[((32*0)+31):(32*0)] <= adc_ch_data[((32*7)+31):(32*7)];
-    adc_ch_data_d7[((32*7)+31):(32*1)] <= adc_ch_data_d7[((32*6)+31):(32*0)];
-  end
-
   always @(posedge adc_clk) begin
 
-    adc_ch_valid_0 <= adc_ch_valid_d[0];
-    adc_ch_valid_1 <= adc_ch_valid_d[1];
-    adc_ch_valid_2 <= adc_ch_valid_d[2];
-    adc_ch_valid_3 <= adc_ch_valid_d[3];
-    adc_ch_valid_4 <= adc_ch_valid_d[4];
-    adc_ch_valid_5 <= adc_ch_valid_d[5];
-    adc_ch_valid_6 <= adc_ch_valid_d[6];
-    adc_ch_valid_7 <= adc_ch_valid_d[7];
-    adc_ch_data_0 <= adc_ch_data_d0[((32*0)+31):(32*0)];
-    adc_ch_data_1 <= adc_ch_data_d1[((32*0)+31):(32*0)];
-    adc_ch_data_2 <= adc_ch_data_d2[((32*0)+31):(32*0)];
-    adc_ch_data_3 <= adc_ch_data_d3[((32*0)+31):(32*0)];
-    adc_ch_data_4 <= adc_ch_data_d4[((32*0)+31):(32*0)];
-    adc_ch_data_5 <= adc_ch_data_d5[((32*0)+31):(32*0)];
-    adc_ch_data_6 <= adc_ch_data_d6[((32*0)+31):(32*0)];
-    adc_ch_data_7 <= adc_ch_data_d7[((32*0)+31):(32*0)];
+    adc_ch_valid_0_1 <= adc_data_valid[0];
+    adc_ch_valid_2_3 <= adc_data_valid[1];
+    adc_ch_valid_4_5 <= adc_data_valid[2];
+    adc_ch_valid_6_7 <= adc_data_valid[3];
+    adc_ch_data_0 <= adc_data_p[((32*0)+31):(32*0)];
+    adc_ch_data_1 <= adc_data_p[((32*1)+31):(32*1)];
+    adc_ch_data_2 <= adc_data_p[((32*2)+31):(32*2)];
+    adc_ch_data_3 <= adc_data_p[((32*3)+31):(32*3)];
+    adc_ch_data_4 <= adc_data_p[((32*4)+31):(32*4)];
+    adc_ch_data_5 <= adc_data_p[((32*5)+31):(32*5)];
+    adc_ch_data_6 <= adc_data_p[((32*6)+31):(32*6)];
+    adc_ch_data_7 <= adc_data_p[((32*7)+31):(32*7)];
+    adc_data_valid <= {adc_data_valid[2:0],adc_valid_p};
   end
-
-  always @(posedge adc_clk) begin
-    adc_ch_valid <= adc_valid_p;
-    if (adc_valid_p == 1'b1) begin
-      adc_ch_data <= adc_data_p;
-    end else begin
-      adc_ch_data <= 256'd0;
-    end
-  end
-
 
   // data (common)
 
   assign adc_cnt_enable_s = (adc_cnt_p <= 9'h03f) ? 1'b1 : 1'b0;
-
 
   always @(posedge adc_clk) begin
     if (adc_ready_in_s == 1'b1) begin
@@ -245,7 +166,7 @@ assign adc_valid_pp = adc_valid_pp_s;
     end else if (adc_cnt_enable_s == 1'b1) begin
       adc_cnt_p <= adc_cnt_p + 1'b1;
     end
-    if (adc_cnt_p == 9'h01f || adc_cnt_p == 9'h03f) begin
+    if (adc_cnt_p == 9'h03f) begin
       adc_valid_p <= 1'b1;
     end else begin
       adc_valid_p <= 1'b0;
@@ -256,23 +177,15 @@ assign adc_valid_pp = adc_valid_pp_s;
 
   genvar n;
   generate
-
-  for (n = 0; n < 4; n = n + 1) begin: g_data
-
-  always @(posedge adc_clk) begin
-    if (adc_cnt_p[4:0] == 5'h00) begin
-      adc_data_p[((32*n)+31):(32*n)] <= {31'd0, adc_data_in_s[n]};
-    end else begin
-      adc_data_p[((32*n)+31):(32*n)] <= {adc_data_p[((32*n)+30):(32*n)], adc_data_in_s[n]};
+    for (n = 0; n < 4; n = n + 1) begin: g_data
+      always @(posedge adc_clk) begin
+        if (adc_cnt_p == 9'h00) begin
+          adc_data_p[((64*n)+63):(64*n)] <= {63'd0, data_in[n]};
+        end else begin
+          adc_data_p[((64*n)+63):(64*n)] <= {adc_data_p[((64*n)+62):(64*n)], data_in[n]};
+        end
+      end
     end
-  end
-
-  assign adc_data_in_s[n] = data_in[n];
-
-  end
   endgenerate
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

@@ -64,12 +64,7 @@ module axi_ad7771 #(
   output          adc_clk,
   output          adc_reset,
   output          adc_valid,
-  output          adc_valid_pp,
-
-  
-
-
-
+ 
   input           s_axi_aclk,
   input           s_axi_aresetn,
   input           s_axi_awvalid,
@@ -93,10 +88,10 @@ module axi_ad7771 #(
   input           s_axi_rready);
 
   wire          adc_clk_s;
-  wire          valid_pp_s;
+
 
   
-assign adc_clk = adc_clk_s;
+ assign adc_clk = adc_clk_s;
 
 axi_generic_adc #(
   .NUM_OF_CHANNELS(8),
@@ -134,7 +129,7 @@ axi_ad7771_if i_ad7771_if (
   .ready_in (ready_in),
   .data_in (data_in),
   .adc_clk (adc_clk_s),
-  .adc_valid_pp (adc_valid_pp),
+  .adc_valid (adc_valid),
   .sync_in (sync_in),
   .adc_data_0 (adc_data_0),
   .adc_data_1 (adc_data_1),
