@@ -40,8 +40,8 @@ module avl_adxphy #(
 
   // parameters
 
-  parameter   integer NUM_OF_LANES = 4) (
-
+  parameter   integer NUM_OF_LANES = 4
+) (
   // rx-ip interface
 
   output  [((NUM_OF_LANES* 1)-1):0]   rx_ip_locked,
@@ -217,7 +217,6 @@ module avl_adxphy #(
   input                               tx_ip_bit_reversal,
   input                               tx_ip_byte_reversal,
 
-
   // tx-phy interface
 
   input                               tx_phy_cal_busy_0,
@@ -328,7 +327,8 @@ module avl_adxphy #(
 
   input   [((NUM_OF_LANES* 1)-1):0]   tx_core_analogreset,
   input   [((NUM_OF_LANES* 1)-1):0]   tx_core_digitalreset,
-  output  [((NUM_OF_LANES* 1)-1):0]   tx_core_cal_busy);
+  output  [((NUM_OF_LANES* 1)-1):0]   tx_core_cal_busy
+);
 
   // rx assignments
 
@@ -919,7 +919,3 @@ module avl_adxphy #(
   assign tx_phy_byte_reversal_7 = tx_ip_byte_reversal;
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************
-

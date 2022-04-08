@@ -37,8 +37,8 @@
 
 module up_axi #(
 
-  parameter   AXI_ADDRESS_WIDTH = 16) (
-
+  parameter   AXI_ADDRESS_WIDTH = 16
+) (
   // reset and clocks
 
   input                             up_rstn,
@@ -73,7 +73,8 @@ module up_axi #(
   output                            up_rreq,
   output  [(AXI_ADDRESS_WIDTH-3):0] up_raddr,
   input   [31:0]                    up_rdata,
-  input                             up_rack);
+  input                             up_rack
+);
 
   // internal registers
 
@@ -234,6 +235,3 @@ module up_axi #(
   end
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

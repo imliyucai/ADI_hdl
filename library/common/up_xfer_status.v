@@ -37,8 +37,8 @@
 
 module up_xfer_status #(
 
-  parameter     DATA_WIDTH = 8) (
-
+  parameter     DATA_WIDTH = 8
+) (
   // up interface
 
   input                       up_rstn,
@@ -49,7 +49,8 @@ module up_xfer_status #(
 
   input                       d_rst,
   input                       d_clk,
-  input   [(DATA_WIDTH-1):0]  d_data_status);
+  input   [(DATA_WIDTH-1):0]  d_data_status
+);
 
   // internal registers
 
@@ -123,6 +124,3 @@ module up_xfer_status #(
   end
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

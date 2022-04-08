@@ -38,8 +38,8 @@
 module axi_adcfifo_adc #(
 
   parameter   ADC_DATA_WIDTH = 128,
-  parameter   AXI_DATA_WIDTH = 512) (
-
+  parameter   AXI_DATA_WIDTH = 512
+) (
   // fifo interface
 
   input                   adc_rst,
@@ -54,7 +54,8 @@ module axi_adcfifo_adc #(
 
   input                   axi_drst,
   input                   axi_clk,
-  input       [ 3:0]      axi_xfer_status);
+  input       [ 3:0]      axi_xfer_status
+);
 
   localparam  ADC_MEM_RATIO = AXI_DATA_WIDTH/ADC_DATA_WIDTH;
 
@@ -111,7 +112,9 @@ module axi_adcfifo_adc #(
 
   // instantiations
 
-  up_xfer_status #(.DATA_WIDTH(4)) i_xfer_status (
+  up_xfer_status #(
+    .DATA_WIDTH(4)
+  ) i_xfer_status (
     .up_rstn (~adc_rst),
     .up_clk (adc_clk),
     .up_data_status (adc_xfer_status_s),
@@ -120,6 +123,3 @@ module axi_adcfifo_adc #(
     .d_data_status (axi_xfer_status));
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

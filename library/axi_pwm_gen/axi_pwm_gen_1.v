@@ -38,8 +38,8 @@ module axi_pwm_gen_1 #(
 
   // the width and period are defined in number of clock cycles
   parameter   PULSE_WIDTH = 7,
-  parameter   PULSE_PERIOD = 100000000) (
-
+  parameter   PULSE_PERIOD = 100000000
+) (
   input               clk,
   input               rstn,
 

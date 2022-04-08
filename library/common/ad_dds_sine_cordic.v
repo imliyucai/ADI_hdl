@@ -42,8 +42,8 @@ module ad_dds_sine_cordic #(
   // Range = 8-24
   parameter   CORDIC_DW = 16,
   // Range = N/A
-  parameter   DELAY_DW  = 1) (
-
+  parameter   DELAY_DW  = 1
+) (
   // interface
 
   input                        clk,
@@ -51,7 +51,8 @@ module ad_dds_sine_cordic #(
   output reg [CORDIC_DW-1:0]   sine,
   output reg [CORDIC_DW-1:0]   cosine,
   input      [ DELAY_DW-1:0]   ddata_in,
-  output reg [ DELAY_DW-1:0]   ddata_out);
+  output reg [ DELAY_DW-1:0]   ddata_out
+);
 
   // Local Parameters
   localparam LUT_FSCALE = 1 << (PHASE_DW);
@@ -399,8 +400,8 @@ module ad_dds_sine_cordic #(
         .P_DW (PHASE_DW),
         .D_DW (CORDIC_DW),
         .DELAY_DW (DELAY_DW),
-        .SHIFT(i))
-      pipe (
+        .SHIFT(i)
+      ) pipe (
         .clk (clk),
         .dataa_x (x_s[i]),
         .dataa_y (y_s[i]),
@@ -411,8 +412,7 @@ module ad_dds_sine_cordic #(
         .result_y (y_s[i+1]),
         .result_z (z_s[i+1]),
         .data_delay_in (data_in_d[i]),
-        .data_delay_out (data_in_d[i+1])
-      );
+        .data_delay_out (data_in_d[i+1]));
     end
   endgenerate
 
@@ -425,6 +425,3 @@ module ad_dds_sine_cordic #(
   end
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

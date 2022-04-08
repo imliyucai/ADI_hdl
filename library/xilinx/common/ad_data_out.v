@@ -43,8 +43,8 @@ module ad_data_out #(
   parameter   IODELAY_ENABLE = 0,
   parameter   IODELAY_CTRL = 0,
   parameter   IODELAY_GROUP = "dev_if_delay_group",
-  parameter   REFCLK_FREQUENCY = 200) (
-
+  parameter   REFCLK_FREQUENCY = 200
+) (
   // data interface
 
   input               tx_clk,
@@ -64,7 +64,8 @@ module ad_data_out #(
 
   input               delay_clk,
   input               delay_rst,
-  output              delay_locked);
+  output              delay_locked
+);
 
   localparam  NONE = -1;
   localparam  SEVEN_SERIES = 1;
@@ -178,6 +179,3 @@ module ad_data_out #(
   endgenerate
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

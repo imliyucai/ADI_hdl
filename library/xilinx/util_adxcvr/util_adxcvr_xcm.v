@@ -57,9 +57,7 @@ module util_adxcvr_xcm #(
   parameter   [15:0]  QPLL_CP_G3 = 10'b0000011111,
   parameter   [15:0]  QPLL_LPF = 10'b0100110111,
   parameter   [15:0]  QPLL_CP = 10'b0001111111
-
 ) (
-
   // reset and clocks
 
   input           qpll_ref_clk,
@@ -82,7 +80,8 @@ module util_adxcvr_xcm #(
   input           up_cm_wr,
   input   [15:0]  up_cm_wdata,
   output  [15:0]  up_cm_rdata,
-  output          up_cm_ready);
+  output          up_cm_ready
+);
 
   localparam GTXE2_TRANSCEIVERS = 2;
   localparam GTHE3_TRANSCEIVERS = 5;
@@ -738,7 +737,3 @@ module util_adxcvr_xcm #(
   endgenerate
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************
-

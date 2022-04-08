@@ -38,7 +38,6 @@
 module up_clock_mon #(
   parameter TOTAL_WIDTH = 32
 ) (
-
   // processor interface
 
   input                              up_rstn,
@@ -48,7 +47,8 @@ module up_clock_mon #(
   // device interface
 
   input                              d_rst,
-  input                              d_clk);
+  input                              d_clk
+);
 
   // internal registers
 
@@ -141,6 +141,3 @@ module up_clock_mon #(
   end
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

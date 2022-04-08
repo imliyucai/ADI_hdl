@@ -202,8 +202,7 @@ module ad_ip_jesd204_tpl_dac #(
     .jesd_f (BYTES_PER_FRAME),
     .jesd_n (CONVERTER_RESOLUTION),
     .jesd_np (BITS_PER_SAMPLE),
-    .up_profile_sel ()
-  );
+    .up_profile_sel ());
 
   // core
 
@@ -259,9 +258,7 @@ module ad_ip_jesd204_tpl_dac #(
     .dac_iqcor_coeff_1 (dac_iqcor_coeff_1),
     .dac_iqcor_coeff_2 (dac_iqcor_coeff_2),
 
-    .dac_src_chan_sel (dac_src_chan_sel)
-
-  );
+    .dac_src_chan_sel (dac_src_chan_sel);
 
   // Drop DMA padding bits from the LSB or MSB based on configuration
   integer i;

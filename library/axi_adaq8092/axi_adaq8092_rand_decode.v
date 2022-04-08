@@ -43,7 +43,8 @@ module axi_adaq8092_rand_decode (
   input       [27:0]      adc_data,
   input                   adc_clk,
   input                   adc_rand_enb,
-  output      [27:0]      adc_data_decoded);
+  output      [27:0]      adc_data_decoded
+);
   
   // internal register 
 

@@ -123,8 +123,7 @@ module ad_ip_jesd204_tpl_dac_framer #(
       .WORD_WIDTH (BITS_PER_CHANNEL_PER_FRAME)
     ) i_channels_to_frames (
       .data_in (dac_data_msb),
-      .data_out (frame_data_s)
-    );
+      .data_out (frame_data_s));
 
     /* Slice frame and pack it into lanes */
     ad_perfect_shuffle #(
@@ -133,8 +132,7 @@ module ad_ip_jesd204_tpl_dac_framer #(
       .WORD_WIDTH (BITS_PER_LANE_PER_FRAME)
     ) i_frames_to_lanes (
       .data_in (frame_data_s),
-      .data_out (link_data_msb_s)
-    );
+      .data_out (link_data_msb_s));
 
     /* Reorder octets LSB first */
     for (i = 0; i < LINK_DATA_WIDTH; i = i + 8) begin: g_link_data

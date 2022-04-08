@@ -43,8 +43,8 @@ module up_delay_cntrl #(
   parameter   INIT_DELAY = 0,
   parameter   DATA_WIDTH = 8,
   parameter   DRP_WIDTH = 5,
-  parameter   BASE_ADDRESS = 6'h02) (
-
+  parameter   BASE_ADDRESS = 6'h02
+) (
   // delay interface
 
   input                           delay_clk,
@@ -68,7 +68,8 @@ module up_delay_cntrl #(
   input                           up_rreq,
   input   [13:0]                  up_raddr,
   output  [31:0]                  up_rdata,
-  output                          up_rack);
+  output                          up_rack
+);
 
   generate
   if (DISABLE == 1) begin
@@ -203,6 +204,3 @@ module up_delay_cntrl #(
   endgenerate
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

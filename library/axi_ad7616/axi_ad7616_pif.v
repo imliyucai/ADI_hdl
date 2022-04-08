@@ -37,8 +37,8 @@
 
 module axi_ad7616_pif #(
 
-  parameter UP_ADDRESS_WIDTH = 14) (
-
+  parameter UP_ADDRESS_WIDTH = 14
+) (
   // physical interface
 
   output                  cs_n,
@@ -67,8 +67,8 @@ module axi_ad7616_pif #(
   input                   wr_req,
   input       [15:0]      wr_data,
   output  reg [15:0]      rd_data,
-  output  reg             rd_valid);
-
+  output  reg             rd_valid
+);
 
   // state registers
 
@@ -212,4 +212,3 @@ module axi_ad7616_pif #(
   end
 
 endmodule
-

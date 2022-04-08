@@ -41,8 +41,8 @@ module axi_adcfifo_wr #(
   parameter   AXI_SIZE = 2,
   parameter   AXI_LENGTH = 16,
   parameter   AXI_ADDRESS = 32'h00000000,
-  parameter   AXI_ADDRESS_LIMIT = 32'h00000000) (
-
+  parameter   AXI_ADDRESS_LIMIT = 32'h00000000
+) (
   // request and synchronization
 
   input                   dma_xfer_req,
@@ -91,7 +91,8 @@ module axi_adcfifo_wr #(
 
   output  reg             axi_dwovf,
   output  reg             axi_dwunf,
-  output  reg             axi_werror);
+  output  reg             axi_werror
+);
 
   localparam  AXI_BYTE_WIDTH = AXI_DATA_WIDTH/8;
   localparam  AXI_AWINCR = AXI_LENGTH * AXI_BYTE_WIDTH;
@@ -389,7 +390,9 @@ module axi_adcfifo_wr #(
 
   // interface handler
 
-  ad_axis_inf_rx #(.DATA_WIDTH(AXI_DATA_WIDTH)) i_axis_inf (
+  ad_axis_inf_rx #(
+    .DATA_WIDTH(AXI_DATA_WIDTH)
+  ) i_axis_inf (
     .clk (axi_clk),
     .rst (axi_reset),
     .valid (axi_rd_d),
@@ -402,7 +405,10 @@ module axi_adcfifo_wr #(
 
   // buffer
 
-  ad_mem #(.DATA_WIDTH(AXI_DATA_WIDTH), .ADDRESS_WIDTH(8)) i_mem (
+  ad_mem #(
+    .DATA_WIDTH(AXI_DATA_WIDTH),
+    .ADDRESS_WIDTH(8)
+  ) i_mem (
     .clka (adc_clk),
     .wea (adc_wr),
     .addra (adc_waddr),
@@ -413,6 +419,3 @@ module axi_adcfifo_wr #(
     .doutb (axi_rdata_s));
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

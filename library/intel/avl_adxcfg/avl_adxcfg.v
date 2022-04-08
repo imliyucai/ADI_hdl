@@ -37,8 +37,8 @@
 
 module avl_adxcfg #(
 
-  parameter ADDRESS_WIDTH = 10) (
-
+  parameter ADDRESS_WIDTH = 10
+) (
   // reconfig sharing
 
   input           rcfg_clk,
@@ -70,7 +70,8 @@ module avl_adxcfg #(
   output  [ADDRESS_WIDTH-1:0]  rcfg_out_address_1,
   output  [31:0]  rcfg_out_writedata_1,
   input   [31:0]  rcfg_out_readdata_1,
-  input           rcfg_out_waitrequest_1);
+  input           rcfg_out_waitrequest_1
+);
 
   // internal registers
 
@@ -160,7 +161,3 @@ module avl_adxcfg #(
   end
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************
-

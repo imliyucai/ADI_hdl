@@ -38,15 +38,15 @@
 module ad_xcvr_rx_if #(
   parameter OCTETS_PER_BEAT = 4,
   parameter DW = OCTETS_PER_BEAT * 8
-)(
-
+) (
   // jesd interface
 
   input rx_clk,
   input [OCTETS_PER_BEAT-1:0] rx_ip_sof,
   input [DW-1:0] rx_ip_data,
   output reg rx_sof,
-  output reg [DW-1:0] rx_data);
+  output reg [DW-1:0] rx_data
+);
 
   // rx_ip_sof:
   // The input beat may contain more than one frame per clock, a sof bit is set for
@@ -97,6 +97,3 @@ module ad_xcvr_rx_if #(
   end
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

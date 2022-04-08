@@ -38,8 +38,8 @@
 module util_dacfifo_bypass #(
 
   parameter   DAC_DATA_WIDTH = 64,
-  parameter   DMA_DATA_WIDTH = 64) (
-
+  parameter   DMA_DATA_WIDTH = 64
+) (
   // DMA FIFO interface
 
   input                               dma_clk,
@@ -142,8 +142,8 @@ module util_dacfifo_bypass #(
   end
 
   ad_b2g #(
-    .DATA_WIDTH (DMA_ADDRESS_WIDTH))
-  i_dma_mem_waddr_b2g (
+    .DATA_WIDTH (DMA_ADDRESS_WIDTH)
+  ) i_dma_mem_waddr_b2g (
     .din (dma_mem_waddr),
     .dout (dma_mem_waddr_b2g_s));
 
@@ -170,8 +170,8 @@ module util_dacfifo_bypass #(
   end
 
   ad_g2b #(
-    .DATA_WIDTH (DAC_ADDRESS_WIDTH))
-  i_dma_mem_raddr_g2b (
+    .DATA_WIDTH (DAC_ADDRESS_WIDTH)
+  ) i_dma_mem_raddr_g2b (
     .din (dma_mem_raddr_m2),
     .dout (dma_mem_raddr_m2_g2b_s));
 
@@ -184,7 +184,6 @@ module util_dacfifo_bypass #(
                                 ((MEM_RATIO == 1) ? (dma_mem_raddr) :
                                  (MEM_RATIO == 2) ? ({dma_mem_raddr, 1'b0}) :
                                  (MEM_RATIO == 4) ? ({dma_mem_raddr, 2'b0}) : ({dma_mem_raddr, 3'b0}));
-
 
   // relative address offset on dac domain
   assign dac_address_diff_s = {1'b1, dac_mem_waddr_s} - dac_mem_raddr;
@@ -220,8 +219,8 @@ module util_dacfifo_bypass #(
   end
 
   ad_b2g #(
-    .DATA_WIDTH (DAC_ADDRESS_WIDTH))
-  i_dac_mem_raddr_b2g (
+    .DATA_WIDTH (DAC_ADDRESS_WIDTH)
+  ) i_dac_mem_raddr_b2g (
     .din (dac_mem_raddr),
     .dout (dac_mem_raddr_b2g_s));
 
@@ -240,8 +239,8 @@ module util_dacfifo_bypass #(
   end
 
   ad_g2b #(
-    .DATA_WIDTH (DMA_ADDRESS_WIDTH))
-  i_dac_mem_waddr_g2b (
+    .DATA_WIDTH (DMA_ADDRESS_WIDTH)
+  ) i_dac_mem_waddr_g2b (
     .din (dac_mem_waddr_m2),
     .dout (dac_mem_waddr_m2_g2b_s));
 
@@ -273,4 +272,3 @@ module util_dacfifo_bypass #(
   end
 
 endmodule
-

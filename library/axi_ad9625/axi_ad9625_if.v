@@ -37,7 +37,8 @@
 
 module axi_ad9625_if #(
 
-  parameter   ID = 0) (
+  parameter   ID = 0
+) (
   // jesd interface
   // rx_clk is (line-rate/40)
 
@@ -55,7 +56,8 @@ module axi_ad9625_if #(
   output      [ 15:0]     adc_sref,
   input                   adc_sref_sync,
   input       [  3:0]     adc_raddr_in,
-  output      [  3:0]     adc_raddr_out);
+  output      [  3:0]     adc_raddr_out
+);
 
   // internal registers
 
@@ -207,7 +209,10 @@ module axi_ad9625_if #(
 
   // alignment fifo
 
-  ad_mem #(.ADDRESS_WIDTH(4), .DATA_WIDTH(192)) i_mem (
+  ad_mem #(
+    .ADDRESS_WIDTH(4),
+    .DATA_WIDTH(192)
+  ) i_mem (
     .clka (rx_clk),
     .wea (1'b1),
     .addra (adc_waddr),
@@ -232,7 +237,3 @@ module axi_ad9625_if #(
   endgenerate
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************
-

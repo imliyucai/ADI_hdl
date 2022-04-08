@@ -42,7 +42,6 @@ module axi_ad9250 #(
   parameter   SPEED_GRADE = 0,
   parameter   DEV_PACKAGE = 0
 ) (
-
   // jesd interface
   // rx_clk is (line-rate/40)
 
@@ -85,7 +84,8 @@ module axi_ad9250 #(
   output                  s_axi_rvalid,
   output      [31:0]      s_axi_rdata,
   output      [ 1:0]      s_axi_rresp,
-  input                   s_axi_rready);
+  input                   s_axi_rready
+);
 
   assign adc_clk = rx_clk;
 
@@ -135,7 +135,6 @@ module axi_ad9250 #(
     .s_axi_rvalid (s_axi_rvalid),
     .s_axi_rready (s_axi_rready),
     .s_axi_rresp (s_axi_rresp),
-    .s_axi_rdata (s_axi_rdata)
-  );
+    .s_axi_rdata (s_axi_rdata));
 
 endmodule

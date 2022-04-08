@@ -41,7 +41,8 @@ module axi_adaq8092_apb_decode (
   input      [27:0]      adc_data,
   input                  adc_clk,
   input                  adc_abp_enb,
-  output     [27:0]      adc_data_decoded);
+  output     [27:0]      adc_data_decoded
+);
 
   // internal registers 
  
