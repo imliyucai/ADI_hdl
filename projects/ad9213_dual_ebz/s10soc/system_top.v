@@ -157,7 +157,6 @@ module system_top (
   output           adf4377_sclk,
   inout            adf4377_sdio,
   output  [  1:0]  adf4377_csn
-
 );
 
   // internal signals
@@ -204,8 +203,8 @@ module system_top (
   // instantiations
 
   ad_3w_spi #(
-    .NUM_OF_SLAVES(2))
-  i_ad_3w_spi_ad9213_dual (
+    .NUM_OF_SLAVES(2)
+  ) i_ad_3w_spi_ad9213_dual (
     .spi_csn (ad9213_dual_csn),
     .spi_clk (ad9213_dual_sclk),
     .spi_mosi (spi_mosi_s),
@@ -214,8 +213,8 @@ module system_top (
     .spi_dir ());
 
   ad_3w_spi #(
-    .NUM_OF_SLAVES(2))
-  i_ad_3w_spi_adf4377 (
+    .NUM_OF_SLAVES(2)
+  ) i_ad_3w_spi_adf4377 (
     .spi_csn (adf4377_csn),
     .spi_clk (adf4377_sclk),
     .spi_mosi (adf4377_sdi_s),
@@ -231,28 +230,28 @@ module system_top (
   // done reset
   assign sys_resetn_s = fpga_resetn & ~h2f_reset_s & ~ninit_done_s;
 
- genvar i;
- for (i = 0; i < 512; i = i + 16) begin
-    assign adc_data[(2*i)+31:(2*i)] ={adc_data_1[i+15:i],adc_data_0[i+15:i]};
- end
+  genvar i;
+  for (i = 0; i < 512; i = i + 16) begin
+     assign adc_data[(2*i)+31:(2*i)] ={adc_data_1[i+15:i],adc_data_0[i+15:i]};
+  end
 
- always @(posedge rx_device_clk_0) begin
-   adc_data_0_d1 <= adc_data_0;
-   adc_data_1_d1 <= adc_data_1;
+  always @(posedge rx_device_clk_0) begin
+    adc_data_0_d1 <= adc_data_0;
+    adc_data_1_d1 <= adc_data_1;
 
-   case ({adc_enable_1,adc_enable_0})
-     2'b01: adc_data_d1 <= {adc_data_0,adc_data_0_d1};
-     2'b10: adc_data_d1 <= {adc_data_1,adc_data_1_d1};
-     2'b11: adc_data_d1 <= adc_data;
-     default: adc_data_d1 <= adc_data_d1;
-   endcase
-   case ({adc_enable_1,adc_enable_0})
-     2'b01: adc_valid_d1 <= ~adc_valid_d1;
-     2'b10: adc_valid_d1 <= ~adc_valid_d1;
-     2'b11: adc_valid_d1<= adc_valid;
-     default: adc_valid_d1 <= adc_valid;
-   endcase
- end
+    case ({adc_enable_1,adc_enable_0})
+      2'b01: adc_data_d1 <= {adc_data_0,adc_data_0_d1};
+      2'b10: adc_data_d1 <= {adc_data_1,adc_data_1_d1};
+      2'b11: adc_data_d1 <= adc_data;
+      default: adc_data_d1 <= adc_data_d1;
+    endcase
+    case ({adc_enable_1,adc_enable_0})
+      2'b01: adc_valid_d1 <= ~adc_valid_d1;
+      2'b10: adc_valid_d1 <= ~adc_valid_d1;
+      2'b11: adc_valid_d1<= adc_valid;
+      default: adc_valid_d1 <= adc_valid;
+    endcase
+  end
 
   system_bd i_system_bd (
     .sys_clk_clk                          ( sys_clk ),
@@ -376,6 +375,3 @@ module system_top (
     .ad9213_dual_pio_export                 ( {ad9213_b_gpio, ad9213_a_gpio} ));
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

@@ -127,7 +127,7 @@ module system_top (
   inout  [8:0] mxfe2_gpio,
   inout  [8:0] mxfe3_gpio,
 
-  // PMOD1 for calibration board 
+  // PMOD1 for calibration board
   output pmod1_adc_sync_n,
   output pmod1_adc_sdi,
   input  pmod1_adc_sdo,
@@ -137,7 +137,6 @@ module system_top (
   output pmod1_5045_v1,
   output pmod1_ctrl_ind,
   output pmod1_ctrl_rx_combined
-
 );
 
   // internal signals
@@ -199,7 +198,7 @@ module system_top (
   end
   endgenerate
 
-  // Link 0 SYNC single ended lines 
+  // Link 0 SYNC single ended lines
   assign mxfe_syncin_p[0] = link0_rx_syncout[0];
   assign mxfe_syncin_p[2] = link0_rx_syncout[1];
   assign mxfe_syncin_p[4] = link0_rx_syncout[2];
@@ -241,8 +240,7 @@ module system_top (
 
   BUFG i_rx_device_clk (
     .I (fpga_clk_m2c_1),
-    .O (rx_device_clk)
-  );
+    .O (rx_device_clk));
 
   IBUFDS i_ibufds_tx_device_clk (
     .I (fpga_clk_m2c_p[2]),
@@ -251,8 +249,7 @@ module system_top (
 
   BUFG i_tx_device_clk (
     .I (fpga_clk_m2c_2),
-    .O (tx_device_clk)
-  );
+    .O (tx_device_clk));
 
   // spi
 
@@ -282,7 +279,9 @@ module system_top (
 
   assign spi_3_miso =  ~pmod1_adc_sync_n ? pmod1_adc_sdo : 1'b0;
 
-   ad_3w_spi #(.NUM_OF_SLAVES(1)) i_spi_hmc (
+  ad_3w_spi #(
+    .NUM_OF_SLAVES(1)
+  ) i_spi_hmc (
     .spi_csn (spi_2_csn[4]),
     .spi_clk (spi_2_clk),
     .spi_mosi (spi_2_mosi),
@@ -290,7 +289,9 @@ module system_top (
     .spi_sdio (hmc7043_sdata),
     .spi_dir ());
 
-   ad_3w_spi #(.NUM_OF_SLAVES(1)) i_spi_4371 (
+  ad_3w_spi #(
+    .NUM_OF_SLAVES(1)
+  ) i_spi_4371 (
     .spi_csn (&spi_2_csn[3:0]),
     .spi_clk (spi_2_clk),
     .spi_mosi (spi_2_mosi),
@@ -300,12 +301,13 @@ module system_top (
 
   // gpios
 
-  ad_iobuf #(.DATA_WIDTH(1)) i_iobuf (
+  ad_iobuf #(
+    .DATA_WIDTH(1)
+  ) i_iobuf (
     .dio_t (gpio_t[32:32]),
     .dio_i (gpio_o[32:32]),
     .dio_o (gpio_i[32:32]),
-    .dio_p ({hmc7043_gpio       // 32
-             }));
+    .dio_p ({hmc7043_gpio})); // 32
 
   assign hmc7043_reset = gpio_o[33];
   assign adrf5020_ctrl = gpio_o[34];
@@ -318,7 +320,9 @@ module system_top (
 
   assign dac_fifo_bypass  = gpio_o[61];
 
-  ad_iobuf #(.DATA_WIDTH(17)) i_iobuf_bd (
+  ad_iobuf #(
+    .DATA_WIDTH(17)
+  ) i_iobuf_bd (
     .dio_t (gpio_t[16:0]),
     .dio_i (gpio_o[16:0]),
     .dio_o (gpio_i[16:0]),
@@ -335,8 +339,7 @@ module system_top (
 
     .gpio_t(gpio_t[127:64]),
     .gpio_i(gpio_i[127:64]),
-    .gpio_o(gpio_o[127:64])
-  );
+    .gpio_o(gpio_o[127:64]));
 
   assign pmod1_5045_v2 = gpio_o[120];
   assign pmod1_5045_v1 = gpio_o[121];
@@ -495,12 +498,8 @@ module system_top (
     .gpio3_i (gpio_i[127:96]),
     .gpio3_o (gpio_o[127:96]),
     .gpio3_t (gpio_t[127:96]),
-    .ext_sync (sysref)
-  );
+    .ext_sync (sysref));
 
   assign link1_rx_syncout = 4'b1111;
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

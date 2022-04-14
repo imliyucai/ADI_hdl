@@ -35,18 +35,15 @@
 
 `timescale 1ns/100ps
 
-
 module system_top  #(
-    parameter TX_JESD_L = 8,
-    parameter TX_NUM_LINKS = 1,
-    parameter RX_JESD_L = 8,
-    parameter RX_NUM_LINKS = 1,
-    parameter SHARED_DEVCLK = 0
-  ) (
-
+  parameter TX_JESD_L = 8,
+  parameter TX_NUM_LINKS = 1,
+  parameter RX_JESD_L = 8,
+  parameter RX_NUM_LINKS = 1,
+  parameter SHARED_DEVCLK = 0
+) (
   input  [12:0] gpio_bd_i,
   output [ 7:0] gpio_bd_o,
-
 
   // FMC HPC IOs
   input  [1:0]  agc0,
@@ -83,7 +80,6 @@ module system_top  #(
   input         sysref2_n,
   input         sysref2_p,
   output [1:0]  txen
-
 );
 
   // internal signals
@@ -158,13 +154,11 @@ module system_top  #(
 
   BUFG i_tx_device_clk (
     .I (clkin6),
-    .O (tx_device_clk)
-  );
+    .O (tx_device_clk));
 
   BUFG i_rx_device_clk (
     .I (clkin10),
-    .O (rx_device_clk_internal)
-  );
+    .O (rx_device_clk_internal));
 
   assign rx_device_clk = SHARED_DEVCLK ? tx_device_clk : rx_device_clk_internal;
 
@@ -173,8 +167,9 @@ module system_top  #(
   assign spi0_csb   = spi0_csn[0];
   assign spi1_csb   = spi1_csn[0];
 
-
-  ad_3w_spi #(.NUM_OF_SLAVES(1)) i_spi (
+  ad_3w_spi #(
+    .NUM_OF_SLAVES(1)
+  ) i_spi (
     .spi_csn (spi1_csn[0]),
     .spi_clk (spi1_sclk),
     .spi_mosi (spi1_mosi),
@@ -184,7 +179,9 @@ module system_top  #(
 
   // gpios
 
-  ad_iobuf #(.DATA_WIDTH(12)) i_iobuf (
+  ad_iobuf #(
+    .DATA_WIDTH(12)
+  ) i_iobuf (
     .dio_t (gpio_t[43:32]),
     .dio_i (gpio_o[43:32]),
     .dio_o (gpio_i[43:32]),
@@ -270,8 +267,7 @@ module system_top  #(
     .rx_sync_0 (rx_syncout),
     .tx_sync_0 (tx_syncin),
     .rx_sysref_0 (sysref),
-    .tx_sysref_0 (sysref)
-  );
+    .tx_sysref_0 (sysref));
 
   assign rx_data_p_loc[RX_JESD_L*RX_NUM_LINKS-1:0] = rx_data_p[RX_JESD_L*RX_NUM_LINKS-1:0];
   assign rx_data_n_loc[RX_JESD_L*RX_NUM_LINKS-1:0] = rx_data_n[RX_JESD_L*RX_NUM_LINKS-1:0];
@@ -279,8 +275,4 @@ module system_top  #(
   assign tx_data_p[TX_JESD_L*TX_NUM_LINKS-1:0] = tx_data_p_loc[TX_JESD_L*TX_NUM_LINKS-1:0];
   assign tx_data_n[TX_JESD_L*TX_NUM_LINKS-1:0] = tx_data_n_loc[TX_JESD_L*TX_NUM_LINKS-1:0];
 
-
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************

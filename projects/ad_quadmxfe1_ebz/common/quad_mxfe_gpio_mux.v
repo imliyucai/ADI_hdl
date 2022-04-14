@@ -45,7 +45,6 @@ module quad_mxfe_gpio_mux #() (
   input  [127:64] gpio_t,
   output [127:64] gpio_i,
   input  [127:64] gpio_o
-
 );
 
   wire gpio0_mode;
@@ -63,7 +62,9 @@ module quad_mxfe_gpio_mux #() (
   wire [5:0] gpio_o_91_86;
   wire [5:0] gpio_t_102_97;
 
-  ad_iobuf #(.DATA_WIDTH(9)) i_iobuf_mxfe_0 (
+  ad_iobuf #(
+    .DATA_WIDTH(9)
+  ) i_iobuf_mxfe_0 (
     .dio_t ({gpio_t[72:70],gpio_t_69_64}),
     .dio_i ({gpio_o[72:70],gpio_o_69_64}),
     .dio_o (gpio_i[72:64]),
@@ -82,7 +83,9 @@ module quad_mxfe_gpio_mux #() (
   assign gpio_o_69_64[4] = gpio4_mode ? mxfe3_gpio4_in : gpio_o[68];
   assign gpio_o_69_64[5] = gpio5_mode ? mxfe3_gpio5_in : gpio_o[69];
 
-  ad_iobuf #(.DATA_WIDTH(9)) i_iobuf_mxfe_1 (
+  ad_iobuf #(
+    .DATA_WIDTH(9)
+  ) i_iobuf_mxfe_1 (
     .dio_t ({gpio_t[83:81],gpio_t_80_75}),
     .dio_i ({gpio_o[83:81],gpio_o_80_75}),
     .dio_o (gpio_i[83:75]),
@@ -101,7 +104,9 @@ module quad_mxfe_gpio_mux #() (
   assign gpio_o_80_75[4] = gpio4_mode ? mxfe3_gpio4_in : gpio_o[79];
   assign gpio_o_80_75[5] = gpio5_mode ? mxfe3_gpio5_in : gpio_o[80];
 
-  ad_iobuf #(.DATA_WIDTH(9)) i_iobuf_mxfe_2 (
+  ad_iobuf #(
+    .DATA_WIDTH(9)
+  ) i_iobuf_mxfe_2 (
     .dio_t ({gpio_t[94:92],gpio_t_91_86}),
     .dio_i ({gpio_o[94:92],gpio_o_91_86}),
     .dio_o (gpio_i[94:86]),
@@ -120,7 +125,9 @@ module quad_mxfe_gpio_mux #() (
   assign gpio_o_91_86[4] = gpio4_mode ? mxfe3_gpio4_in : gpio_o[90];
   assign gpio_o_91_86[5] = gpio5_mode ? mxfe3_gpio5_in : gpio_o[91];
 
-  ad_iobuf #(.DATA_WIDTH(9)) i_iobuf_mxfe_3 (
+  ad_iobuf #(
+    .DATA_WIDTH(9)
+  ) i_iobuf_mxfe_3 (
     .dio_t ({gpio_t[105:103],gpio_t_102_97}),
     .dio_i (gpio_o[105:97]),
     .dio_o (gpio_i[105:97]),

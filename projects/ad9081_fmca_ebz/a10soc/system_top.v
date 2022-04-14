@@ -52,7 +52,6 @@ module system_top #(
   parameter RX_KS_PER_CHANNEL  = 32,
   parameter TX_KS_PER_CHANNEL  = 32
 ) (
-
   // clock and resets
 
   input             sys_clk,
@@ -155,8 +154,7 @@ module system_top #(
   output        rstb,
   output [1:0]  rxen,
   output [1:0]  txen
-
-  );
+);
 
   // internal signals
 
@@ -176,7 +174,9 @@ module system_top #(
 
   assign spi0_mosi = spi_mosi;
 
-  ad_3w_spi #(.NUM_OF_SLAVES(1)) i_spi_hmc (
+  ad_3w_spi #(
+    .NUM_OF_SLAVES(1)
+  ) i_spi_hmc (
     .spi_csn (spi_csn_s[1]),
     .spi_clk (spi_clk),
     .spi_mosi (spi_mosi),
@@ -318,11 +318,6 @@ module system_top #(
     .rx_ref_clk_clk (fpga_refclk_in),
     .rx_sync_export (fpga_syncout),
     .rx_sysref_export (sysref2),
-    .rx_device_clk_clk (clkin6)
-
-  );
+    .rx_device_clk_clk (clkin6));
 
 endmodule
-
-// ***************************************************************************
-// ***************************************************************************
