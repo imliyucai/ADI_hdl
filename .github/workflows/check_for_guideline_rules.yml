@@ -1,0 +1,37 @@
+name: Guideline checker
+
+on: 
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'library/**'
+      - 'projects/**'
+ 
+jobs:
+  guideline_check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8 
+      - name: checkout repository code
+        uses: actions/checkout@v2
+      # repository that retrieves all the changed files
+      - name: load get-changed-files repo
+        uses: Ana06/get-changed-files@v1.2
+        id: changed_files
+        with:
+          format: space-delimited
+      - name: print changed files
+        run: |
+          echo "Changed files:"
+          echo "${{ steps.changed_files.outputs.all }}"
+      - name: execute py script for guideline check
+        id: execution
+      # -p flag means that files will be specified with their relative path
+        run: |
+          python ./.github/scripts/check_guideline.py -p ${{ steps.changed_files.outputs.all }}
+        shell: sh
