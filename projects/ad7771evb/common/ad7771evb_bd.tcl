@@ -2,7 +2,8 @@
 # ad7768 interface
 
 create_bd_port -dir I adc_clk_in
-create_bd_port -dir I adc_sync
+create_bd_port -dir O sync_in_n
+create_bd_port -dir I sync_out_n
 create_bd_port -dir I adc_ready
 create_bd_port -dir I -from 3 -to 0 adc_data_in
 
@@ -17,6 +18,7 @@ ad_ip_parameter ad7771_dma CONFIG.AXI_SLICE_SRC 0
 ad_ip_parameter ad7771_dma CONFIG.AXI_SLICE_DEST 0
 ad_ip_parameter ad7771_dma CONFIG.DMA_2D_TRANSFER 0
 ad_ip_parameter ad7771_dma CONFIG.DMA_DATA_WIDTH_SRC 256
+ad_ip_parameter ad7771_dma CONFIG.DMA_DATA_WIDTH_DEST 64
 
 
 
@@ -42,7 +44,10 @@ ad_connect axi_ad7771_adc/adc_valid ad7771_adc_pack/fifo_wr_en
 
 ad_connect adc_data_in axi_ad7771_adc/data_in
 ad_connect adc_ready axi_ad7771_adc/ready_in
-ad_connect adc_sync  axi_ad7771_adc/sync_in
+
+ad_connect sync_in_n  axi_ad7771_adc/sync_in_n
+ad_connect sync_out_n  axi_ad7771_adc/sync_out_n
+
 for {set i 0} {$i < 8} {incr i} {
   ad_connect axi_ad7771_adc/adc_data_$i ad7771_adc_pack/fifo_wr_data_$i
   ad_connect axi_ad7771_adc/adc_enable_$i ad7771_adc_pack/enable_$i
@@ -85,7 +90,7 @@ ad_mem_hp1_interconnect sys_cpu_clk    ad7771_dma/m_dest_axi
 
 set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     set_property -dict [list CONFIG.C_MONITOR_TYPE {Native}] $my_ila
-    set_property -dict [list CONFIG.C_NUM_OF_PROBES {9}] $my_ila
+    set_property -dict [list CONFIG.C_NUM_OF_PROBES {11}] $my_ila
     set_property -dict [list CONFIG.C_TRIGIN_EN {false}] $my_ila
     set_property -dict [list CONFIG.C_PROBE0_WIDTH {32}] $my_ila
     set_property -dict [list CONFIG.C_PROBE1_WIDTH {32}] $my_ila
@@ -96,6 +101,8 @@ set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     set_property -dict [list CONFIG.C_PROBE6_WIDTH {32}] $my_ila
     set_property -dict [list CONFIG.C_PROBE7_WIDTH {32}] $my_ila
     set_property -dict [list CONFIG.C_PROBE8_WIDTH {1}] $my_ila
+    set_property -dict [list CONFIG.C_PROBE9_WIDTH {1}] $my_ila
+    set_property -dict [list CONFIG.C_PROBE10_WIDTH {4}] $my_ila
 
    
    
@@ -110,6 +117,8 @@ set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     ad_connect my_ila/probe6 axi_ad7771_adc/adc_data_6
     ad_connect my_ila/probe7 axi_ad7771_adc/adc_data_7
     ad_connect my_ila/probe8 axi_ad7771_adc/adc_valid
+    ad_connect my_ila/probe9 adc_ready
+    ad_connect my_ila/probe10 adc_data_in
 
 
   

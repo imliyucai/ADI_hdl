@@ -41,13 +41,14 @@ module axi_ad7771_if (
 
   input                   clk_in,
   input                   ready_in,
-  input                   sync_in,
+  output                  sync_in_n,
+  input                   sync_out_n,
   input       [ 3:0]      data_in,
 
   // data path interface
 
   output                  adc_clk,
-  output                 adc_valid,
+  output                  adc_valid,
 
   output   [ 31:0]       adc_data_0,
   output   [ 31:0]       adc_data_1,
@@ -60,11 +61,6 @@ module axi_ad7771_if (
 
   // internal registers
 
-  reg               adc_ch_valid_0_1 = 'd0;
-  reg               adc_ch_valid_2_3 = 'd0;
-  reg               adc_ch_valid_4_5 = 'd0;
-  reg               adc_ch_valid_6_7 = 'd0;
-
 
   reg     [ 31:0]   adc_ch_data_0 = 'd0;
   reg     [ 31:0]   adc_ch_data_1 = 'd0;
@@ -75,7 +71,6 @@ module axi_ad7771_if (
   reg     [ 31:0]   adc_ch_data_6 = 'd0;
   reg     [ 31:0]   adc_ch_data_7 = 'd0;
  
-  reg     [255:0]   adc_ch_data = 'd0;
   reg     [  8:0]   adc_cnt_p = 'd0;
   reg               adc_valid_p = 'd0;
   reg     [255:0]   adc_data_p = 'd0;
@@ -88,6 +83,7 @@ module axi_ad7771_if (
   reg    [ 31:0]   adc_data_5_s;
   reg    [ 31:0]   adc_data_6_s;
   reg    [ 31:0]   adc_data_7_s; 
+
   reg    [ 3:0]    adc_data_valid='b0;
   
 
@@ -102,9 +98,8 @@ module axi_ad7771_if (
 
 
 
-  assign adc_clk = clk_in;
-  assign adc_ready_in_s = ready_in;
   assign adc_valid = adc_valid_s;
+  assign adc_ready_in_s = ready_in;
   assign adc_data_0 = adc_data_0_s;
   assign adc_data_1 = adc_data_1_s;
   assign adc_data_2 = adc_data_2_s;
@@ -113,73 +108,61 @@ module axi_ad7771_if (
   assign adc_data_5 = adc_data_5_s;
   assign adc_data_6 = adc_data_6_s;
   assign adc_data_7 = adc_data_7_s;
-
+  assign sync_in_n  = sync_out_n;
+  assign adc_clk  = clk_in;
+ 
   // data & status
 
   always @(posedge adc_clk) begin
-    if (adc_ch_valid_0_1 == 1'b1) begin
-      adc_data_0_s <= adc_ch_data_0;
-      adc_data_1_s <= adc_ch_data_1;
-    end
-   
-    if (adc_ch_valid_2_3 == 1'b1) begin
-      adc_data_2_s <= adc_ch_data_2;
-      adc_data_3_s <= adc_ch_data_3;
-    end
-    if (adc_ch_valid_4_5 == 1'b1) begin
-      adc_data_4_s <= adc_ch_data_4;
-      adc_data_5_s <= adc_ch_data_5;
-    end
-    if (adc_ch_valid_6_7 == 1'b1) begin
-      adc_data_6_s <= adc_ch_data_6;
-      adc_data_7_s <= adc_ch_data_7;
-    end
-    adc_valid_s = adc_ch_valid_6_7;
+  
+    if (adc_valid_p == 1'b1) begin
+    
+      adc_data_0_s <= adc_data_p[((32*1)+31):(32*1)];
+      adc_data_1_s <= adc_data_p[((32*0)+31):(32*0)];
+      adc_data_2_s <= adc_data_p[((32*3)+31):(32*3)];
+      adc_data_3_s <= adc_data_p[((32*2)+31):(32*2)];
+      adc_data_4_s <= adc_data_p[((32*5)+31):(32*5)];
+      adc_data_5_s <= adc_data_p[((32*4)+31):(32*4)];
+      adc_data_6_s <= adc_data_p[((32*7)+31):(32*7)];
+      adc_data_7_s <= adc_data_p[((32*6)+31):(32*6)];
+      adc_valid_s   <= adc_valid_p;
+    end else begin
+      adc_data_0_s <= 32'b0;
+      adc_data_1_s <= 32'b0;
+      adc_data_2_s <= 32'b0;
+      adc_data_3_s <= 32'b0;
+      adc_data_4_s <= 32'b0;
+      adc_data_5_s <= 32'b0;
+      adc_data_6_s <= 32'b0;
+      adc_data_7_s <= 32'b0;
+	  adc_valid_s  <=  1'b0;
+    end 
   end
 
-  // data (interleaving)
 
-  always @(posedge adc_clk) begin
 
-    adc_ch_valid_0_1 <= adc_data_valid[0];
-    adc_ch_valid_2_3 <= adc_data_valid[1];
-    adc_ch_valid_4_5 <= adc_data_valid[2];
-    adc_ch_valid_6_7 <= adc_data_valid[3];
-    adc_ch_data_0 <= adc_data_p[((32*0)+31):(32*0)];
-    adc_ch_data_1 <= adc_data_p[((32*1)+31):(32*1)];
-    adc_ch_data_2 <= adc_data_p[((32*2)+31):(32*2)];
-    adc_ch_data_3 <= adc_data_p[((32*3)+31):(32*3)];
-    adc_ch_data_4 <= adc_data_p[((32*4)+31):(32*4)];
-    adc_ch_data_5 <= adc_data_p[((32*5)+31):(32*5)];
-    adc_ch_data_6 <= adc_data_p[((32*6)+31):(32*6)];
-    adc_ch_data_7 <= adc_data_p[((32*7)+31):(32*7)];
-    adc_data_valid <= {adc_data_valid[2:0],adc_valid_p};
-  end
+  assign adc_cnt_enable_s = (adc_cnt_p < 'h03f) ? 1'b1 : 1'b0;
 
-  // data (common)
-
-  assign adc_cnt_enable_s = (adc_cnt_p <= 9'h03f) ? 1'b1 : 1'b0;
-
-  always @(posedge adc_clk) begin
+  always @(negedge adc_clk) begin
     if (adc_ready_in_s == 1'b1) begin
-      adc_cnt_p <= 9'h000;
+      adc_cnt_p <= 'h000;
     end else if (adc_cnt_enable_s == 1'b1) begin
       adc_cnt_p <= adc_cnt_p + 1'b1;
     end
-    if (adc_cnt_p == 9'h03f) begin
+     if (adc_cnt_p == 'h03f) begin
       adc_valid_p <= 1'b1;
     end else begin
       adc_valid_p <= 1'b0;
     end
   end
-
+ 
   // data (individual lanes)
 
   genvar n;
   generate
     for (n = 0; n < 4; n = n + 1) begin: g_data
-      always @(posedge adc_clk) begin
-        if (adc_cnt_p == 9'h00) begin
+      always @(negedge adc_clk) begin
+        if (adc_cnt_p == 'h000 ) begin
           adc_data_p[((64*n)+63):(64*n)] <= {63'd0, data_in[n]};
         end else begin
           adc_data_p[((64*n)+63):(64*n)] <= {adc_data_p[((64*n)+62):(64*n)], data_in[n]};

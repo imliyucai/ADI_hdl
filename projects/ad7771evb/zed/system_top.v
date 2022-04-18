@@ -37,6 +37,27 @@
 
 module system_top (
 
+  // adc interface 
+
+  input                   adc_clk_in,
+  input                   adc_ready_in,
+  input       [ 3:0]      adc_data_in,
+  output                  spi_csn,
+  output                  spi_clk,
+  output                  spi_mosi,
+  input                   spi_miso,
+  output                  start_n,
+  output                  sync_in_n,
+  input                   sync_out_n,
+  input                   alert,
+  output                  sdp_convst,
+  output                  sdp_mclk,
+  output                  reset_n,
+  inout                   gpio0,
+  inout                   gpio1,
+  inout                   gpio2,
+
+
   inout       [14:0]      ddr_addr,
   inout       [ 2:0]      ddr_ba,
   inout                   ddr_cas_n,
@@ -81,25 +102,7 @@ module system_top (
   inout       [ 1:0]      iic_mux_scl,
   inout       [ 1:0]      iic_mux_sda,
 
-  input                   otg_vbusoc,
-
-  input                   adc_clk_in,
-  input                   adc_ready_in,
-  input       [ 3:0]      adc_data_in,
-
-  output                  spi_csn,
-  output                  spi_clk,
-  output                  spi_mosi,
-  input                   spi_miso,
-
-
-  output                   reset_n,
-  output                   start_n,
-  output                   sync_n,
-  input                    alert,
-  output                   sdp_convst,
-  output                   gpio2,
-  output                   sdp_mclk);
+  input                   otg_vbusoc);
 
   // internal signals
   
@@ -115,14 +118,17 @@ module system_top (
   wire            iic_mux_sda_t_s;
 
 
-  // instantiations
+  // gpio assign
+
 assign gpio_i[32] = alert;
 assign start_n    = gpio_o[33];
-assign reset_n    = gpio_o[34];
-assign sync_n     = gpio_o[35];
-assign sdp_convst = gpio_o[36];
-assign gpio2      = gpio_o[37];
-assign sdp_mclk   = gpio_o[38];
+assign sdp_convst = gpio_o[34];
+assign sdp_mclk   = gpio_o[35];
+assign gpio0      = gpio_o[36];
+assign gpio1      = gpio_o[37];
+assign gpio2      = gpio_o[38];
+assign reset_n    = gpio_o[39];
+
 assign gpio_i[63:33] = gpio_o[63:33];
 assign gpio_i[31:15] = gpio_o[31:15];
 
@@ -149,8 +155,10 @@ ad_iobuf #(.DATA_WIDTH(15)) iobuf_gpio_bd (
 
   system_wrapper i_system_wrapper (
     .adc_clk_in(adc_clk_in),
-    .adc_ready(adc_ready),
+    .adc_ready(adc_ready_in),
     .adc_data_in(adc_data_in),
+    .sync_in_n(sync_in_n),
+    .sync_out_n(sync_out_n),
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
     .ddr_cas_n (ddr_cas_n),
@@ -172,6 +180,9 @@ ad_iobuf #(.DATA_WIDTH(15)) iobuf_gpio_bd (
     .fixed_io_ps_clk (fixed_io_ps_clk),
     .fixed_io_ps_porb (fixed_io_ps_porb),
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
+    .gpio_i (gpio_i),
+    .gpio_o (gpio_o),
+    .gpio_t (gpio_t),
     .hdmi_data (hdmi_data),
     .hdmi_data_e (hdmi_data_e),
     .hdmi_hsync (hdmi_hsync),

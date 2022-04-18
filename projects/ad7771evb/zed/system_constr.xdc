@@ -1,26 +1,24 @@
+set_property  -dict {PACKAGE_PIN Y11   IOSTANDARD LVCMOS33}  [get_ports spi_csn]         ; #CS_N          P24_P1    JA1_1  
+set_property  -dict {PACKAGE_PIN AA11  IOSTANDARD LVCMOS33}  [get_ports spi_mosi]        ; #SDI           P24_P2    JA1_2   
+set_property  -dict {PACKAGE_PIN Y10   IOSTANDARD LVCMOS33}  [get_ports spi_miso]        ; #SDO           P24_P3    JA1_3  
+set_property  -dict {PACKAGE_PIN AA9   IOSTANDARD LVCMOS33}  [get_ports spi_clk]         ; #SCLK          P24_P4    JA1_4 
+set_property  -dict {PACKAGE_PIN AB11  IOSTANDARD LVCMOS33}  [get_ports sdp_mclk]        ; #EXT_MCLK?     P24_P7    JA1_7  
+set_property  -dict {PACKAGE_PIN AB10  IOSTANDARD LVCMOS33}  [get_ports adc_ready_in]    ; #DRDY_N        P24_P8    JA1_8 
+set_property  -dict {PACKAGE_PIN AB9   IOSTANDARD LVCMOS33}  [get_ports adc_clk_in]      ; #DCLK          P24_P9    JA1_9     
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets adc_clk_in]
+set_property  -dict {PACKAGE_PIN AA8   IOSTANDARD LVCMOS33}  [get_ports adc_data_in[0]]  ; #DOUT0        P24_P10    JA1_10  
 
+set_property  -dict {PACKAGE_PIN AB7  IOSTANDARD LVCMOS33}  [get_ports start_n]        ; #START_N       P30_P1   JC1_1_P
+set_property  -dict {PACKAGE_PIN AB6  IOSTANDARD LVCMOS33}  [get_ports adc_data_in[1]] ; #DOUT1         P30_P2   JC1_1_N  
+set_property  -dict {PACKAGE_PIN Y4   IOSTANDARD LVCMOS33}  [get_ports adc_data_in[2]] ; #DOUT2         P30_P3   JC1_2_P  
+set_property  -dict {PACKAGE_PIN AA4  IOSTANDARD LVCMOS33}  [get_ports adc_data_in[3]] ; #DOUT3         P30_P4   JC1_2_N
+set_property  -dict {PACKAGE_PIN R6   IOSTANDARD LVCMOS33}  [get_ports reset_n]        ; #RESET_N       P30_P7   JC1_3_P
+set_property  -dict {PACKAGE_PIN T6   IOSTANDARD LVCMOS33}  [get_ports sdp_convst]     ; #CONVST        P30_P8   JC1_3_N
 
-
-set_property  -dict {PACKAGE_PIN L18   IOSTANDARD LVCMOS25}  [get_ports adc_clk_in]     ; #DCLK_B       CLK0_M2C_P
-set_property  -dict {PACKAGE_PIN M19   IOSTANDARD LVCMOS25}  [get_ports adc_ready_in]   ; #DRDY_B       LA00_P
-set_property  -dict {PACKAGE_PIN M20   IOSTANDARD LVCMOS25}  [get_ports adc_data_in[0]] ; #DOUT0_B      LA00_N
-set_property  -dict {PACKAGE_PIN L22   IOSTANDARD LVCMOS25}  [get_ports adc_data_in[1]] ; #DOUT1_B      LA06_N 
-set_property  -dict {PACKAGE_PIN P17   IOSTANDARD LVCMOS25}  [get_ports adc_data_in[2]] ; #DOUT2_B      LA02_P
-set_property  -dict {PACKAGE_PIN P18   IOSTANDARD LVCMOS25}  [get_ports adc_data_in[3]] ; #DOUT3_B      LA02_N
-
-set_property  -dict {PACKAGE_PIN J18  IOSTANDARD LVCMOS25}  [get_ports spi_csn]        ; #CS_B         LA05_P
-set_property  -dict {PACKAGE_PIN N19  IOSTANDARD LVCMOS25}  [get_ports spi_clk]        ; #SCLK_B       LA01_P
-set_property  -dict {PACKAGE_PIN M22  IOSTANDARD LVCMOS25}  [get_ports spi_mosi]       ; #SDI_B        LA04_N
-set_property  -dict {PACKAGE_PIN N22  IOSTANDARD LVCMOS25}  [get_ports spi_miso]       ; #SDO_B        LA03_P
-
-
-set_property  -dict {PACKAGE_PIN L21  IOSTANDARD LVCMOS25}  [get_ports reset_n]         ; #RESET_B     LA06_P  
-set_property  -dict {PACKAGE_PIN P22  IOSTANDARD LVCMOS25}  [get_ports start_n]         ; #START_B     LA03_N 
-set_property  -dict {PACKAGE_PIN M21  IOSTANDARD LVCMOS25}  [get_ports sync_n]          ; #SYNC_IN_B   LA04_P SHORTED TO
-set_property  -dict {PACKAGE_PIN R19  IOSTANDARD LVCMOS25}  [get_ports alert]           ; #ALERT_B     LA10_P
-set_property  -dict {PACKAGE_PIN R20  IOSTANDARD LVCMOS25}  [get_ports sdp_convst]      ; #SDP_CONVST  LA09_P
-set_property  -dict {PACKAGE_PIN A22  IOSTANDARD LVCMOS25}  [get_ports gpio2]           ; #GPIO2       LA32_N 
-set_property  -dict {PACKAGE_PIN N20   IOSTANDARD LVCMOS25}  [get_ports sdp_mclk]        ; #SDP_MCLK    LA01_N
-             
-
-create_clock -name adc_clk -period 122.07 [get_ports adc_clk_in]
+set_property  -dict {PACKAGE_PIN W12  IOSTANDARD LVCMOS33}  [get_ports alert]           ; #ALERT         P16_P1   JB1_1   
+set_property  -dict {PACKAGE_PIN W11  IOSTANDARD LVCMOS33}  [get_ports sync_out_n]      ; #SYNC_OUT_N    P16_P2   JB1_2           
+set_property  -dict {PACKAGE_PIN V10  IOSTANDARD LVCMOS33}  [get_ports sync_in_n]       ; #SYNC_IN_N     P16_P3   JB1_3    
+set_property  -dict {PACKAGE_PIN V12  IOSTANDARD LVCMOS33}  [get_ports gpio0]           ; #GPIO0         P16_P7   JB1_7       
+set_property  -dict {PACKAGE_PIN W10  IOSTANDARD LVCMOS33}  [get_ports gpio1]           ; #GPIO1         P16_P8   JB1_8       
+set_property  -dict {PACKAGE_PIN V9   IOSTANDARD LVCMOS33}  [get_ports gpio2]           ; #GPIO2         P16_P9   JB1_9    
+            
