@@ -45,6 +45,8 @@ module axi_ad7771_if (
   input                   sync_out_n,
   input       [ 3:0]      data_in,
   input       [ 4:0]      adc_num_lanes,
+  input                   adc_sshot,
+  input                   adc_crc_enable,
 
   // data path interface
 
@@ -58,7 +60,8 @@ module axi_ad7771_if (
   output   [ 31:0]       adc_data_4,
   output   [ 31:0]       adc_data_5,
   output   [ 31:0]       adc_data_6,
-  output   [ 31:0]       adc_data_7);
+  output   [ 31:0]       adc_data_7,
+  output   [ 63:0]       adc_status);
 
   // internal registers
 
@@ -87,7 +90,7 @@ module axi_ad7771_if (
 
   reg    [ 3:0]    adc_data_valid='b0;
   reg              adc_valid_s;
-
+  reg              adc_ready;
 
  
   // internal signals
@@ -189,7 +192,7 @@ module axi_ad7771_if (
       adc_data_5_s <= 32'b0;
       adc_data_6_s <= 32'b0;
       adc_data_7_s <= 32'b0;
-	  adc_valid_s  <=  1'b0;
+	    adc_valid_s  <=  1'b0;
     end 
   end
 
@@ -200,7 +203,7 @@ module axi_ad7771_if (
 
   always @(negedge adc_clk) begin
     
-    if (adc_ready_in_s == 1'b1) begin
+    if (adc_ready == 1'b1) begin
       adc_cnt_p <= 'h000;
     end else if (adc_cnt_enable_s == 1'b1) begin
       adc_cnt_p <= adc_cnt_p + 1'b1;
@@ -211,6 +214,13 @@ module axi_ad7771_if (
       adc_valid_p <= 1'b0;
     end
   end
+
+  // ready (single shot or continous)
+
+  always @(posedge adc_clk) begin
+    adc_ready <= adc_sshot ^ adc_ready_in_s;
+  end
+
  
   // data (individual lanes)
 
@@ -225,7 +235,6 @@ module axi_ad7771_if (
           end else begin
             adc_data_p[((256*0)+255):(255*0)] <= {adc_data_p[((256*0)+254):(256*0)], data_in[0]};
           end
-
         end else if( adc_num_lanes == 'h2) begin 
          if (adc_cnt_p == 'h000 ) begin
             adc_data_p[((128*0)+127):(128*0)] <= {127'd0, data_in[0]};
@@ -234,7 +243,6 @@ module axi_ad7771_if (
             adc_data_p[((128*0)+127):(128*0)] <= {adc_data_p[((128*0)+126):(128*0)], data_in[0]};
             adc_data_p[((128*1)+127):(128*1)] <= {adc_data_p[((128*1)+126):(128*1)], data_in[1]};
           end
-
         end else begin
          if (adc_cnt_p == 'h000 ) begin
             adc_data_p[((64*0)+63):(64*0)] <= {63'd0, data_in[0]};
@@ -248,7 +256,6 @@ module axi_ad7771_if (
             adc_data_p[((64*3)+63):(64*3)] <= {adc_data_p[((64*3)+62):(64*3)], data_in[3]};
           end
         end
-
     end
 
 endmodule
