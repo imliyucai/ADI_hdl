@@ -39,7 +39,6 @@ set_property  -dict {PACKAGE_PIN  L13  IOSTANDARD LVCMOS18} [get_ports adl5960_t
 set_property  -dict {PACKAGE_PIN  K13  IOSTANDARD LVCMOS18} [get_ports adl5960_temp_6]     ; ## H23 FMC_HPC0_LA19_N
 set_property  -dict {PACKAGE_PIN  P12  IOSTANDARD LVCMOS18} [get_ports adl5960_temp_7]     ; ## H25 FMC_HPC0_LA21_P
 set_property  -dict {PACKAGE_PIN  N12  IOSTANDARD LVCMOS18} [get_ports adl5960_temp_8]     ; ## H26 FMC_HPC0_LA21_N
-set_property  -dict {PACKAGE_PIN  N12  IOSTANDARD LVCMOS18} [get_ports adl5960_temp_8]     ; ## H26 FMC_HPC0_LA21_N
 
 set_property  -dict {PULLTYPE PULLUP} [get_ports adl5960_temp_1]
 set_property  -dict {PULLTYPE PULLUP} [get_ports adl5960_temp_2]
