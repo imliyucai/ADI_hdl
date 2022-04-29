@@ -65,7 +65,9 @@ module axi_ad7771 #(
   output          adc_clk,
   output          adc_reset,
   output          adc_valid,
- 
+  output  [7:0]   adc_crc_s_ila,
+  output  [7:0]   adc_crc_read_data_ila,
+
   input           s_axi_aclk,
   input           s_axi_aresetn,
   input           s_axi_awvalid,
@@ -117,6 +119,9 @@ module axi_ad7771 #(
  wire  [0:8] up_wack_s;
  wire  [7:0] adc_enable;
  wire  [4:0] adc_num_lanes;
+ wire        adc_crc_enable;
+ wire  [7:0] adc_status_header[0:7];
+
 
 
  assign up_clk = s_axi_aclk;
@@ -188,6 +193,7 @@ for (i = 0; i < 8; i=i+1) begin
     .adc_pn_err (1'b0),
     .adc_pn_oos (1'b0),
     .adc_or (1'b0),
+    .adc_status_header(adc_status_header[i]),
     .up_adc_pn_err (),
     .up_adc_pn_oos (),
     .up_adc_or (),
@@ -230,8 +236,9 @@ axi_ad7771_if i_ad7771_if (
   .adc_valid (adc_valid),
   .sync_in_n (sync_in_n),
   .sync_out_n (sync_out_n),
+  .adc_crc_s_ila(adc_crc_s_ila),
+  .adc_crc_read_data_ila(adc_crc_read_data_ila),
   .adc_num_lanes(adc_num_lanes),
-  .adc_sshot(adc_sshot),
   .adc_crc_enable(adc_crc_enable),
   .adc_data_0 (adc_data_0),
   .adc_data_1 (adc_data_1),
@@ -240,7 +247,15 @@ axi_ad7771_if i_ad7771_if (
   .adc_data_4 (adc_data_4),
   .adc_data_5 (adc_data_5),
   .adc_data_6 (adc_data_6),
-  .adc_data_7 (adc_data_7));
+  .adc_data_7 (adc_data_7),
+  .adc_status_0(adc_status_header[0]),
+  .adc_status_1(adc_status_header[1]),
+  .adc_status_2(adc_status_header[2]),
+  .adc_status_3(adc_status_header[3]),
+  .adc_status_4(adc_status_header[4]),
+  .adc_status_5(adc_status_header[5]),
+  .adc_status_6(adc_status_header[6]),
+  .adc_status_7(adc_status_header[7]));
 
 
 
@@ -262,7 +277,6 @@ up_adc_common #(.ID(ID)) i_up_adc_common (
   .adc_sref_sync (),
   .adc_sync (),
   .adc_num_lanes(adc_num_lanes),
-  .adc_sshot(adc_sshot),
   .adc_crc_enable(adc_crc_enable),
   .up_pps_rcounter (32'b0),
   .up_pps_status (1'b0),

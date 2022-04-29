@@ -90,7 +90,7 @@ ad_mem_hp1_interconnect sys_cpu_clk    ad7771_dma/m_dest_axi
 
 set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     set_property -dict [list CONFIG.C_MONITOR_TYPE {Native}] $my_ila
-    set_property -dict [list CONFIG.C_NUM_OF_PROBES {11}] $my_ila
+    set_property -dict [list CONFIG.C_NUM_OF_PROBES {13}] $my_ila
     set_property -dict [list CONFIG.C_TRIGIN_EN {false}] $my_ila
     set_property -dict [list CONFIG.C_PROBE0_WIDTH {32}] $my_ila
     set_property -dict [list CONFIG.C_PROBE1_WIDTH {32}] $my_ila
@@ -103,10 +103,9 @@ set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     set_property -dict [list CONFIG.C_PROBE8_WIDTH {1}] $my_ila
     set_property -dict [list CONFIG.C_PROBE9_WIDTH {1}] $my_ila
     set_property -dict [list CONFIG.C_PROBE10_WIDTH {4}] $my_ila
+    set_property -dict [list CONFIG.C_PROBE11_WIDTH {1}] $my_ila
+    set_property -dict [list CONFIG.C_PROBE12_WIDTH {1}] $my_ila
 
-   
-   
-   
     ad_connect my_ila/clk axi_ad7771_adc/adc_clk
     ad_connect my_ila/probe0 axi_ad7771_adc/adc_data_0
     ad_connect my_ila/probe1 axi_ad7771_adc/adc_data_1
@@ -119,6 +118,9 @@ set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     ad_connect my_ila/probe8 axi_ad7771_adc/adc_valid
     ad_connect my_ila/probe9 adc_ready
     ad_connect my_ila/probe10 adc_data_in
+    ad_connect my_ila/probe11 axi_ad7771_adc/adc_sshot_ila
+    ad_connect my_ila/probe12 axi_ad7771_adc/adc_crc_enable_ila
+
 
 
   

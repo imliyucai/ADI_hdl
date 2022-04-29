@@ -65,6 +65,7 @@ module up_adc_channel #(
   input           adc_pn_err,
   input           adc_pn_oos,
   input           adc_or,
+  input   [ 7:0]  adc_status_header,
   output          up_adc_pn_err,
   output          up_adc_pn_oos,
   output          up_adc_or,
@@ -141,6 +142,7 @@ module up_adc_channel #(
   wire            up_adc_pn_err_s;
   wire            up_adc_pn_oos_s;
   wire            up_adc_or_s;
+  wire    [ 7:0]  up_adc_status_header_s;
 
   // 2's complement function
 
@@ -392,7 +394,7 @@ module up_adc_channel #(
                                   up_adc_iqcor_enb, up_adc_dcfilt_enb,
                                   1'd0, up_adc_dfmt_se, up_adc_dfmt_type, up_adc_dfmt_enable,
                                   2'd0, up_adc_pn_type, up_adc_enable};
-          4'h1: up_rdata_int <= { 29'd0, up_adc_pn_err_int, up_adc_pn_oos_int, up_adc_or_int};
+          4'h1: up_rdata_int <= { 21'd0, up_adc_status_header_s, up_adc_pn_err_int, up_adc_pn_oos_int, up_adc_or_int};
           4'h4: up_rdata_int <= { up_adc_dcfilt_offset, up_adc_dcfilt_coeff};
           4'h5: up_rdata_int <= { up_adc_iqcor_coeff_1, up_adc_iqcor_coeff_2};
           4'h6: up_rdata_int <= { 12'd0, up_adc_pnseq_sel, 12'd0, up_adc_data_sel};
@@ -473,15 +475,17 @@ module up_adc_channel #(
                       adc_pnseq_sel,
                       adc_data_sel}));
 
-  up_xfer_status #(.DATA_WIDTH(3)) i_xfer_status (
+  up_xfer_status #(.DATA_WIDTH(11)) i_xfer_status (
     .up_rstn (up_rstn),
     .up_clk (up_clk),
-    .up_data_status ({up_adc_pn_err_s,
+    .up_data_status ({up_adc_status_header_s,
+                      up_adc_pn_err_s,
                       up_adc_pn_oos_s,
                       up_adc_or_s}),
     .d_rst (adc_rst),
     .d_clk (adc_clk),
-    .d_data_status ({ adc_pn_err,
+    .d_data_status ({ adc_status_header,
+                      adc_pn_err,
                       adc_pn_oos,
                       adc_or}));
 

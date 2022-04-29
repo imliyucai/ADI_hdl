@@ -39,67 +39,81 @@ module axi_ad7771_if (
 
   // device-interface
 
-  input                   clk_in,
-  input                   ready_in,
-  output                  sync_in_n,
-  input                   sync_out_n,
-  input       [ 3:0]      data_in,
-  input       [ 4:0]      adc_num_lanes,
-  input                   adc_sshot,
-  input                   adc_crc_enable,
+  input                 clk_in,
+  input                 ready_in,
+  output                sync_in_n,
+  input                 sync_out_n,
+  input   [ 3:0]        data_in,
+  input   [ 4:0]        adc_num_lanes,
+  input                 adc_crc_enable,
 
   // data path interface
 
-  output                  adc_clk,
-  output                  adc_valid,
+  output                adc_clk,
+  output                adc_valid,
+  output   [ 7:0]       adc_crc_s_ila,
+  output   [ 7:0]       adc_crc_read_data_ila,
 
-  output   [ 31:0]       adc_data_0,
-  output   [ 31:0]       adc_data_1,
-  output   [ 31:0]       adc_data_2,
-  output   [ 31:0]       adc_data_3,
-  output   [ 31:0]       adc_data_4,
-  output   [ 31:0]       adc_data_5,
-  output   [ 31:0]       adc_data_6,
-  output   [ 31:0]       adc_data_7,
-  output   [ 63:0]       adc_status);
+  output   [31:0]       adc_data_0,
+  output   [31:0]       adc_data_1,
+  output   [31:0]       adc_data_2,
+  output   [31:0]       adc_data_3,
+  output   [31:0]       adc_data_4,
+  output   [31:0]       adc_data_5,
+  output   [31:0]       adc_data_6,
+  output   [31:0]       adc_data_7,
+  output   [ 7:0]       adc_status_0,
+  output   [ 7:0]       adc_status_1,
+  output   [ 7:0]       adc_status_2,
+  output   [ 7:0]       adc_status_3,
+  output   [ 7:0]       adc_status_4,
+  output   [ 7:0]       adc_status_5,
+  output   [ 7:0]       adc_status_6,
+  output   [ 7:0]       adc_status_7);
 
   // internal registers
 
 
-  reg     [ 31:0]   adc_ch_data_0 = 'd0;
-  reg     [ 31:0]   adc_ch_data_1 = 'd0;
-  reg     [ 31:0]   adc_ch_data_2 = 'd0;
-  reg     [ 31:0]   adc_ch_data_3 = 'd0;
-  reg     [ 31:0]   adc_ch_data_4 = 'd0;
-  reg     [ 31:0]   adc_ch_data_5 = 'd0;
-  reg     [ 31:0]   adc_ch_data_6 = 'd0;
-  reg     [ 31:0]   adc_ch_data_7 = 'd0;
+  reg      [31:0]       adc_ch_data_0 = 'd0;
+  reg      [31:0]       adc_ch_data_1 = 'd0;
+  reg      [31:0]       adc_ch_data_2 = 'd0;
+  reg      [31:0]       adc_ch_data_3 = 'd0;
+  reg      [31:0]       adc_ch_data_4 = 'd0;
+  reg      [31:0]       adc_ch_data_5 = 'd0;
+  reg      [31:0]       adc_ch_data_6 = 'd0;
+  reg      [31:0]       adc_ch_data_7 = 'd0;
  
-  reg     [  8:0]   adc_cnt_p = 'd0;
-  reg               adc_valid_p = 'd0;
-  reg     [255:0]   adc_data_p = 'd0;
+  reg      [ 8:0]       adc_cnt_p = 'd0;
+  reg                   adc_valid_p = 'd0;
+  reg     [255:0]       adc_data_p = 'd0;
 
-  reg    [ 31:0]   adc_data_0_s; 
-  reg    [ 31:0]   adc_data_1_s;
-  reg    [ 31:0]   adc_data_2_s;
-  reg    [ 31:0]   adc_data_3_s;
-  reg    [ 31:0]   adc_data_4_s;
-  reg    [ 31:0]   adc_data_5_s;
-  reg    [ 31:0]   adc_data_6_s;
-  reg    [ 31:0]   adc_data_7_s; 
-
-  reg    [ 3:0]    adc_data_valid='b0;
-  reg              adc_valid_s;
-  reg              adc_ready;
-
- 
+  reg      [31:0]       adc_data_0_s; 
+  reg      [31:0]       adc_data_1_s;
+  reg      [31:0]       adc_data_2_s;
+  reg      [31:0]       adc_data_3_s;
+  reg      [31:0]       adc_data_4_s;
+  reg      [31:0]       adc_data_5_s;
+  reg      [31:0]       adc_data_6_s;
+  reg      [31:0]       adc_data_7_s; 
+      
+  reg      [ 3:0]       adc_data_valid='b0;
+  reg                   adc_valid_s;
+  reg                   adc_ready;
+  reg      [ 7:0]       adc_crc_8 = 'd0;
+  reg      [ 7:0]       adc_crc_read_data = 'd0;
+  reg      [55:0]       adc_crc_data = 'd0;
+  reg      [ 7:0]       adc_crc_reg ='d0;
   // internal signals
 
-  wire              adc_cnt_enable_s;
-  wire              adc_ready_in_s;
-  wire   [  8:0]    adc_cnt_value;
- 
+  wire                  adc_cnt_enable_s;
+  wire                  adc_ready_in_s;
+  wire    [ 8:0]        adc_cnt_value;
+  wire    [ 7:0]        adc_crc_in_s;
+  wire    [ 7:0]        adc_crc_s;
   
+  wire                  adc_crc_mismatch_s;
+                        
+ 
   assign adc_valid = adc_valid_s;
   assign adc_ready_in_s = ready_in;
   assign adc_data_0 = adc_data_0_s;
@@ -110,50 +124,70 @@ module axi_ad7771_if (
   assign adc_data_5 = adc_data_5_s;
   assign adc_data_6 = adc_data_6_s;
   assign adc_data_7 = adc_data_7_s;
+  assign adc_status_0 = adc_data_0_s[31:24];  
+  assign adc_status_1 = adc_data_1_s[31:24]; 
+  assign adc_status_2 = adc_data_2_s[31:24]; 
+  assign adc_status_3 = adc_data_3_s[31:24]; 
+  assign adc_status_4 = adc_data_4_s[31:24]; 
+  assign adc_status_5 = adc_data_5_s[31:24]; 
+  assign adc_status_6 = adc_data_6_s[31:24]; 
+  assign adc_status_7 = adc_data_7_s[31:24]; 
   assign sync_in_n  = sync_out_n;
   assign adc_clk  = clk_in;
-
+  
+  assign  adc_crc_s_ila = adc_crc_s;
+  assign  adc_crc_read_data_ila = adc_crc_read_data;
  
 
  // function (crc)
 
   function  [ 7:0]  crc8;
-    input   [23:0]  din;
+    input   [53:0]  din;
     input   [ 7:0]  cin;
     reg     [ 7:0]  cout;
     begin
-      cout[ 7] =  cin[ 1] ^ cin[ 2] ^ cin[ 4] ^ cin[ 6] ^ din[ 5] ^ din[ 6] ^ din[ 7] ^ din[11] ^
-                  din[13] ^ din[15] ^ din[17] ^ din[18] ^ din[20] ^ din[22];
-      cout[ 6] =  cin[ 0] ^ cin[ 1] ^ cin[ 3] ^ cin[ 5] ^ din[ 4] ^ din[ 5] ^ din[ 6] ^ din[10] ^
-                  din[12] ^ din[14] ^ din[16] ^ din[17] ^ din[19] ^ din[21];
-      cout[ 5] =  cin[ 0] ^ cin[ 2] ^ cin[ 4] ^ din[ 3] ^ din[ 4] ^ din[ 5] ^ din[ 9] ^ din[11] ^
-                  din[13] ^ din[15] ^ din[16] ^ din[18] ^ din[20];
-      cout[ 4] =  cin[ 1] ^ cin[ 3] ^ din[ 2] ^ din[ 3] ^ din[ 4] ^ din[ 8] ^ din[10] ^ din[12] ^
-                  din[14] ^ din[15] ^ din[17] ^ din[19];
-      cout[ 3] =  cin[ 0] ^ cin[ 2] ^ cin[ 7] ^ din[ 1] ^ din[ 2] ^ din[ 3] ^ din[ 7] ^ din[ 9] ^
-                  din[11] ^ din[13] ^ din[14] ^ din[16] ^ din[18] ^ din[23];
-      cout[ 2] =  cin[ 1] ^ cin[ 6] ^ din[ 0] ^ din[ 1] ^ din[ 2] ^ din[ 6] ^ din[ 8] ^ din[10] ^
-                  din[12] ^ din[13] ^ din[15] ^ din[17] ^ din[22];
-      cout[ 1] =  cin[ 0] ^ cin[ 1] ^ cin[ 2] ^ cin[ 4] ^ cin[ 5] ^ cin[ 6] ^ cin[ 7] ^ din[ 0] ^
-                  din[ 1] ^ din[ 6] ^ din[ 9] ^ din[12] ^ din[13] ^ din[14] ^ din[15] ^ din[16] ^
-                  din[17] ^ din[18] ^ din[20] ^ din[21] ^ din[22] ^ din[23];
-      cout[ 0] =  cin[ 0] ^ cin[ 2] ^ cin[ 3] ^ cin[ 5] ^ cin[ 7] ^ din[ 0] ^ din[ 6] ^ din[ 7] ^
-                  din[ 8] ^ din[12] ^ din[14] ^ din[16] ^ din[18] ^ din[19] ^ din[21] ^ din[23];
+      cout[0] = cin[ 0] ^ cin[ 1] ^ cin[ 2] ^ cin[ 4] ^ cin[ 5] ^ cin[ 6] ^ din[ 0] ^ din[ 6] ^ din[ 7] ^ din[ 8] ^ din[12] ^ din[14] ^ din[16] ^ 
+                din[18] ^ din[19] ^ din[21] ^ din[23] ^ din[28] ^ din[30] ^ din[31] ^ din[34] ^ din[35] ^ din[39] ^ din[40] ^ din[43] ^ din[45] ^ 
+                din[48] ^ din[49] ^ din[50] ^ din[52] ^ din[53] ^ din[54];
+      cout[1] = cin[ 0] ^ cin[ 3] ^ cin[ 4] ^ cin[ 7] ^ din[ 0] ^ din[ 1] ^ din[ 6] ^ din[ 9] ^ din[12] ^ din[13] ^ din[14] ^ din[15] ^ din[16] ^ 
+                din[17] ^ din[18] ^ din[20] ^ din[21] ^ din[22] ^ din[23] ^ din[24] ^ din[28] ^ din[29] ^ din[30] ^ din[32] ^ din[34] ^ din[36] ^ 
+                din[39] ^ din[41] ^ din[43] ^ din[44] ^ din[45] ^ din[46] ^ din[48] ^ din[51] ^ din[52] ^ din[55];
+      cout[2] = cin[ 0] ^ cin[ 2] ^ cin[ 6] ^ din[ 0] ^ din[ 1] ^ din[ 2] ^ din[ 6] ^ din[ 8] ^ din[10] ^ din[12] ^ din[13] ^ din[15] ^ din[17] ^
+                din[22] ^ din[24] ^ din[25] ^ din[28] ^ din[29] ^ din[33] ^ din[34] ^ din[37] ^ din[39] ^ din[42] ^ din[43] ^ din[44] ^ din[46] ^ 
+                din[47] ^ din[48] ^ din[50] ^ din[54];
+      cout[3] = cin[ 0] ^ cin[ 1] ^ cin[ 3] ^ cin[ 7] ^ din[ 1] ^ din[ 2] ^ din[ 3] ^ din[ 7] ^ din[ 9] ^ din[11] ^ din[13] ^ din[14] ^ din[16] ^ 
+                din[18] ^ din[23] ^ din[25] ^ din[26] ^ din[29] ^ din[30] ^ din[34] ^ din[35] ^ din[38] ^ din[40] ^ din[43] ^ din[44] ^ din[45] ^ 
+                din[47] ^ din[48] ^ din[49] ^ din[51] ^ din[55];
+      cout[4] = cin[ 0] ^ cin[ 1] ^ cin[ 2] ^ cin[ 4] ^ din[ 2] ^ din[ 3] ^ din[ 4] ^ din[ 8] ^ din[10] ^ din[12] ^ din[14] ^ din[15] ^ din[17] ^ 
+                din[19] ^ din[24] ^ din[26] ^ din[27] ^ din[30] ^ din[31] ^ din[35] ^ din[36] ^ din[39] ^ din[41] ^ din[44] ^ din[45] ^ din[46] ^ 
+                din[48] ^ din[49] ^ din[50] ^ din[52];
+      cout[5] = cin[ 1] ^ cin[ 2] ^ cin[ 3] ^ cin[ 5] ^ din[ 3] ^ din[ 4] ^ din[ 5] ^ din[ 9] ^ din[11] ^ din[13] ^ din[15] ^ din[16] ^ din[18] ^ 
+                din[20] ^ din[25] ^ din[27] ^ din[28] ^ din[31] ^ din[32] ^ din[36] ^ din[37] ^ din[40] ^ din[42] ^ din[45] ^ din[46] ^ din[47] ^ 
+                din[49] ^ din[50] ^ din[51] ^ din[53];
+      cout[6] = cin[ 0] ^ cin[ 2] ^ cin[ 3] ^ cin[ 4] ^ cin[ 6] ^ din[ 4] ^ din[ 5] ^ din[ 6] ^ din[10] ^ din[12] ^ din[14] ^ din[16] ^ din[17] ^ 
+                din[19] ^ din[21] ^ din[26] ^ din[28] ^ din[29] ^ din[32] ^ din[33] ^ din[37] ^ din[38] ^ din[41] ^ din[43] ^ din[46] ^ din[47] ^ 
+                din[48] ^ din[50] ^ din[51] ^ din[52] ^ din[54];
+      cout[7] = cin[ 0] ^ cin[ 1] ^ cin[ 3] ^ cin[ 4] ^ cin[ 5] ^ cin[ 7] ^ din[ 5] ^ din[ 6] ^ din[ 7] ^ din[11] ^ din[13] ^ din[15] ^ din[17] ^ 
+                din[18] ^ din[20] ^ din[22] ^ din[27] ^ din[29] ^ din[30] ^ din[33] ^ din[34] ^ din[38] ^ din[39] ^ din[42] ^ din[44] ^ din[47] ^ 
+                din[48] ^ din[49] ^ din[51] ^ din[52] ^ din[53] ^ din[55];
       crc8 = cout;
     end
   endfunction
 
+  //crc computing 
 
+  assign adc_crc_s = crc8(adc_crc_data[53:0], adc_crc_in_s);
+  assign adc_crc_in_s = (adc_crc_enable == 'd1) ? 8'hff : adc_crc_reg;
+  assign adc_crc_mismatch_s = (adc_crc_read_data == adc_crc_reg) ? 1'b0 : adc_crc_enable;
 
-
- 
   // data & status
 
   always @(posedge adc_clk) begin
   
     if (adc_valid_p == 1'b1) begin
-
-
+      adc_crc_reg <= adc_crc_s;
+      adc_crc_read_data <= {adc_data_0_s[27:24],adc_data_1_s[27:24]};
+      adc_crc_data <= {adc_data_0_s[31:28],adc_data_0_s[23:0],adc_data_1_s[31:28],adc_data_1_s[23:0]};
       if( adc_num_lanes == 'h1) begin
         adc_data_0_s <= adc_data_p[((32*7)+31):(32*7)];
         adc_data_1_s <= adc_data_p[((32*6)+31):(32*6)];
@@ -194,6 +228,7 @@ module axi_ad7771_if (
       adc_data_7_s <= 32'b0;
 	    adc_valid_s  <=  1'b0;
     end 
+
   end
 
  assign adc_cnt_value = (adc_num_lanes == 'h1) ? 'hff :  
@@ -203,7 +238,7 @@ module axi_ad7771_if (
 
   always @(negedge adc_clk) begin
     
-    if (adc_ready == 1'b1) begin
+    if (adc_ready_in_s == 1'b1) begin
       adc_cnt_p <= 'h000;
     end else if (adc_cnt_enable_s == 1'b1) begin
       adc_cnt_p <= adc_cnt_p + 1'b1;
@@ -215,47 +250,35 @@ module axi_ad7771_if (
     end
   end
 
-  // ready (single shot or continous)
-
-  always @(posedge adc_clk) begin
-    adc_ready <= adc_sshot ^ adc_ready_in_s;
-  end
-
- 
   // data (individual lanes)
 
- 
-
-        always @(negedge adc_clk) begin
-
-
-        if( adc_num_lanes == 'h1) begin 
-          if (adc_cnt_p == 'h000 ) begin
-            adc_data_p[((256*0)+255):(256*0)] <= {255'd0, data_in[0]};
-          end else begin
-            adc_data_p[((256*0)+255):(255*0)] <= {adc_data_p[((256*0)+254):(256*0)], data_in[0]};
-          end
-        end else if( adc_num_lanes == 'h2) begin 
-         if (adc_cnt_p == 'h000 ) begin
-            adc_data_p[((128*0)+127):(128*0)] <= {127'd0, data_in[0]};
-            adc_data_p[((128*1)+127):(128*1)] <= {127'd0, data_in[1]};
-          end else begin
-            adc_data_p[((128*0)+127):(128*0)] <= {adc_data_p[((128*0)+126):(128*0)], data_in[0]};
-            adc_data_p[((128*1)+127):(128*1)] <= {adc_data_p[((128*1)+126):(128*1)], data_in[1]};
-          end
-        end else begin
-         if (adc_cnt_p == 'h000 ) begin
-            adc_data_p[((64*0)+63):(64*0)] <= {63'd0, data_in[0]};
-            adc_data_p[((64*1)+63):(64*1)] <= {63'd0, data_in[1]};
-            adc_data_p[((64*2)+63):(64*2)] <= {63'd0, data_in[2]};
-            adc_data_p[((64*3)+63):(64*3)] <= {63'd0, data_in[3]};
-          end else begin
-            adc_data_p[((64*0)+63):(64*0)] <= {adc_data_p[((64*0)+62):(64*0)], data_in[0]};
-            adc_data_p[((64*1)+63):(64*1)] <= {adc_data_p[((64*1)+62):(64*1)], data_in[1]};
-            adc_data_p[((64*2)+63):(64*2)] <= {adc_data_p[((64*2)+62):(64*2)], data_in[2]};
-            adc_data_p[((64*3)+63):(64*3)] <= {adc_data_p[((64*3)+62):(64*3)], data_in[3]};
-          end
-        end
+  always @(negedge adc_clk) begin
+    if( adc_num_lanes == 'h1) begin 
+      if (adc_cnt_p == 'h000 ) begin
+        adc_data_p[((256*0)+255):(256*0)] <= {255'd0, data_in[0]};
+      end else begin
+        adc_data_p[((256*0)+255):(255*0)] <= {adc_data_p[((256*0)+254):(256*0)], data_in[0]};
+      end
+    end else if( adc_num_lanes == 'h2) begin 
+     if (adc_cnt_p == 'h000 ) begin
+        adc_data_p[((128*0)+127):(128*0)] <= {127'd0, data_in[0]};
+        adc_data_p[((128*1)+127):(128*1)] <= {127'd0, data_in[1]};
+      end else begin
+        adc_data_p[((128*0)+127):(128*0)] <= {adc_data_p[((128*0)+126):(128*0)], data_in[0]};
+        adc_data_p[((128*1)+127):(128*1)] <= {adc_data_p[((128*1)+126):(128*1)], data_in[1]};
+      end
+    end else begin
+     if (adc_cnt_p == 'h000 ) begin
+        adc_data_p[((64*0)+63):(64*0)] <= {63'd0, data_in[0]};
+        adc_data_p[((64*1)+63):(64*1)] <= {63'd0, data_in[1]};
+        adc_data_p[((64*2)+63):(64*2)] <= {63'd0, data_in[2]};
+        adc_data_p[((64*3)+63):(64*3)] <= {63'd0, data_in[3]};
+      end else begin
+        adc_data_p[((64*0)+63):(64*0)] <= {adc_data_p[((64*0)+62):(64*0)], data_in[0]};
+        adc_data_p[((64*1)+63):(64*1)] <= {adc_data_p[((64*1)+62):(64*1)], data_in[1]};
+        adc_data_p[((64*2)+63):(64*2)] <= {adc_data_p[((64*2)+62):(64*2)], data_in[2]};
+        adc_data_p[((64*3)+63):(64*3)] <= {adc_data_p[((64*3)+62):(64*3)], data_in[3]};
+      end
     end
-
+  end
 endmodule
