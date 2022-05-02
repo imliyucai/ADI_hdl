@@ -7,6 +7,7 @@ adi_ip_create axi_tdd_ng
 adi_ip_files axi_tdd_ng [list \
   "$ad_hdl_dir/library/common/up_axi.v" \
   "$ad_hdl_dir/library/util_cdc/sync_bits.v" \
+  "$ad_hdl_dir/library/util_cdc/sync_data.v" \
   "$ad_hdl_dir/library/util_cdc/sync_event.v" \
   "axi_tdd_ng_pkg.sv" \
   "axi_tdd_ng_channel.sv" \

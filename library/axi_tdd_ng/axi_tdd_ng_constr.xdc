@@ -1,3 +1,6 @@
+set_property ASYNC_REG TRUE \
+  [get_cells -hier {*cdc_sync_stage1_reg*}] \
+  [get_cells -hier {*cdc_sync_stage2_reg*}]
 
 set_false_path \
   -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/up_tdd_burst_count_reg[*]}] \
@@ -18,6 +21,10 @@ set_false_path \
 set_false_path \
   -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/up_tdd_sync_period_high_reg[*]}] \
   -to [get_cells -hierarchical * -filter {NAME=~*i_sync_gen/tdd_sync_trigger_reg}]
+
+set_false_path \
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/up_tdd_channel_pol_reg[*]}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_channel/out_reg}]
 
 set_false_path \
   -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/*up_tdd_channel_on_reg[*][*]}] \
@@ -48,19 +55,22 @@ set_false_path \
   -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_ch_en_sync/cdc_sync_stage1_reg[*]}]
 
 set_false_path \
-  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/up_tdd_channel_pol_reg[*]}] \
-  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_ch_pol_sync/cdc_sync_stage1_reg[*]}]
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/cdc_hold_reg*}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/out_data_reg*}]
 
 set_false_path \
-  -from [get_cells -hierarchical * -filter {NAME=~*i_counter/*tdd_cstate_reg[*]}] \
-  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/cdc_sync_stage1_reg[*]}]
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/in_toggle_d1_reg}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/i_sync_out/cdc_sync_stage1_reg[*]}]
 
 set_false_path \
-  -from [get_pins -hierarchical * -filter {NAME=~*/i_tdd_soft_sync/in_toggle_d1_reg/C}] \
-  -to [get_pins -hierarchical * -filter {NAME=~*/i_tdd_soft_sync/i_sync_out/cdc_sync_stage1_reg[*]/D}]
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/out_toggle_d1_reg}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_cstate_sync/i_sync_in/cdc_sync_stage1_reg[*]}]
 
 set_false_path \
-  -from [get_pins -hierarchical * -filter {NAME=~*/i_tdd_soft_sync/out_toggle_d1_reg/C}] \
-  -to [get_pins -hierarchical * -filter {NAME=~*/i_tdd_soft_sync/i_sync_in/cdc_sync_stage1_reg[*]/D}]
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_soft_sync/in_toggle_d1_reg}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_soft_sync/i_sync_out/cdc_sync_stage1_reg[*]}]
 
+set_false_path \
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_soft_sync/out_toggle_d1_reg}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_regmap/i_tdd_soft_sync/i_sync_in/cdc_sync_stage1_reg[*]}]
 
