@@ -77,10 +77,12 @@ module axi_tdd_ng_channel #(
       tdd_ch_en <= 1'b0;
     end else begin
       if (enable) begin
-        if ((tdd_cstate == ARMED) || (tdd_endof_frame == 1'b1)) begin
-          tdd_ch_en <= ch_en;
+        if (tdd_cstate == IDLE) begin
+          tdd_ch_en <= 1'b0;
         end else begin
-          tdd_ch_en <= tdd_ch_en;
+          if ((tdd_cstate == ARMED) || (tdd_endof_frame == 1'b1)) begin
+            tdd_ch_en <= ch_en;
+          end
         end
       end
     end

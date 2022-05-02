@@ -85,12 +85,16 @@ module axi_tdd_ng_counter #(
     if (resetn == 1'b0) begin
       tdd_cstate <= IDLE;
     end else begin
-      tdd_cstate <= tdd_cstate_ns;
+      if (tdd_enable == 1'b0) begin
+        tdd_cstate <= IDLE;
+      end else begin
+        tdd_cstate <= tdd_cstate_ns;
+      end
     end
   end
 
   always @* begin
-    tdd_cstate_ns = tdd_enable ? tdd_cstate : IDLE;
+    tdd_cstate_ns = tdd_cstate;
 
     case (tdd_cstate)
       IDLE : begin

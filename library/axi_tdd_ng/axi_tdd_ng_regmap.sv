@@ -142,7 +142,7 @@ module axi_tdd_ng_regmap #(
 
   // processor write interface
 
-  always @(negedge up_rstn or posedge up_clk) begin
+  always @(posedge up_clk) begin
     if (up_rstn == 0) begin
       up_wack <= 1'b0;
       up_scratch <= 32'b0;
@@ -177,7 +177,7 @@ module axi_tdd_ng_regmap #(
       if ((up_wreq == 1'b1) && (up_waddr[7:0] == ADDR_TDD_CH_ENABLE)) begin
         up_tdd_channel_en <= up_wdata[CHANNEL_COUNT-1:0];
       end
-      if ((up_wreq == 1'b1) && (up_waddr[7:0] == ADDR_TDD_CH_POLARITY)) begin
+      if ((up_wreq == 1'b1) && (up_waddr[7:0] == ADDR_TDD_CH_POLARITY) && !up_tdd_enable) begin
         up_tdd_channel_pol <= up_wdata[CHANNEL_COUNT-1:0];
       end
       if ((up_wreq == 1'b1) && (up_waddr[7:0] == ADDR_TDD_BURST_COUNT) && !up_tdd_enable) begin
@@ -206,7 +206,7 @@ module axi_tdd_ng_regmap #(
       logic [31:0]                      up_tdd_sync_period_low;
       logic [(SYNC_COUNT_WIDTH-32-1):0] up_tdd_sync_period_high;
 
-      always @(negedge up_rstn or posedge up_clk) begin
+      always @(posedge up_clk) begin
         if (up_rstn == 0) begin
           up_tdd_sync_period_low <= 32'b0;
           up_tdd_sync_period_high <= 'd0;
@@ -229,7 +229,7 @@ module axi_tdd_ng_regmap #(
 
         logic [SYNC_COUNT_WIDTH-1:0] up_tdd_sync_period_low;
 
-        always @(negedge up_rstn or posedge up_clk) begin
+        always @(posedge up_clk) begin
           if (up_rstn == 0) begin
             up_tdd_sync_period_low <= 'd0;
           end else begin
@@ -257,7 +257,7 @@ module axi_tdd_ng_regmap #(
   generate
 
     for (i=0; i<CHANNEL_COUNT; i=i+1) begin
-      always @(negedge up_rstn or posedge up_clk) begin
+      always @(posedge up_clk) begin
         if (up_rstn == 0) begin
           up_tdd_channel_on[i] <= 'd0;
           up_tdd_channel_off[i] <= 'd0;
@@ -284,7 +284,7 @@ module axi_tdd_ng_regmap #(
 
   // processor read interface
 
-  always @(negedge up_rstn or posedge up_clk) begin
+  always @(posedge up_clk) begin
     if (up_rstn == 0) begin
       up_rack <= 1'b0;
       up_rdata <= 32'b0;
@@ -385,16 +385,6 @@ module axi_tdd_ng_regmap #(
   // control signals CDC
 
   sync_bits #(
-    .NUM_OF_BITS (2),
-    .RESET_VALUE (0),
-    .ASYNC_CLK (1)
-  ) i_tdd_cstate_sync (
-    .in_bits (tdd_cstate),
-    .out_resetn (1'b1),
-    .out_clk (up_clk),
-    .out_bits (up_tdd_cstate));
-
-  sync_bits #(
     .NUM_OF_BITS (4),
     .RESET_VALUE (0),
     .ASYNC_CLK (1)
@@ -429,15 +419,14 @@ module axi_tdd_ng_regmap #(
     .out_clk (tdd_clk),
     .out_bits (tdd_channel_en));
 
-  sync_bits #(
-    .NUM_OF_BITS (CHANNEL_COUNT),
-    .RESET_VALUE (DEFAULT_POLARITY),
+  sync_data #(
+    .NUM_OF_BITS (2),
     .ASYNC_CLK (1)
-  ) i_tdd_ch_pol_sync (
-    .in_bits (up_tdd_channel_pol),
-    .out_resetn (tdd_resetn),
-    .out_clk (tdd_clk),
-    .out_bits (tdd_channel_pol));
+  ) i_tdd_cstate_sync (
+    .in_clk (tdd_clk),
+    .in_data (tdd_cstate),
+    .out_clk (up_clk),
+    .out_data (up_tdd_cstate));
 
   // skipping the CDC for the rest of the registers since the register writes are gated with module enable
   // furthermore, updating the async domain registers is also conditioned by the synchronized module enable
@@ -445,6 +434,7 @@ module axi_tdd_ng_regmap #(
   assign tdd_burst_count = up_tdd_burst_count;
   assign tdd_startup_delay = up_tdd_startup_delay;
   assign tdd_frame_length = up_tdd_frame_length;
+  assign tdd_channel_pol  = up_tdd_channel_pol;
   assign tdd_channel_on  = up_tdd_channel_on;
   assign tdd_channel_off = up_tdd_channel_off;
 
