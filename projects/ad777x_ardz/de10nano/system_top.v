@@ -115,31 +115,25 @@ module system_top (
   inout             hdmi_i2c_sda,
 
 
-  // cn0540
+  // ad777x
 
-  inout            i2c_sda,
-  inout            i2c_scl,
-
-  input            cn0540_spi_miso,
-  output           cn0540_spi_mosi,
-  output           cn0540_spi_sclk,
-  output           cn0540_spi_cs,
-  input            cn0540_drdy,
-
-  output           cn0540_reset_adc,
-  output           cn0540_shutdown,
-  output           cn0540_csb_aux,
-  input            cn0540_sw_ff,
-  output           cn0540_drdy_aux,
-  output           cn0540_blue_led,
-  output           cn0540_yellow_led,
-  output           cn0540_sync_in,
-
-  output           ltc2308_cs,
-  output           ltc2308_sclk,
-  output           ltc2308_mosi,
-  input            ltc2308_miso
-);
+  input                   adc_clk_in,
+  input                   adc_ready_in,
+  input       [ 3:0]      adc_data_in,
+  output                  spi_csn,
+  output                  spi_clk,
+  output                  spi_mosi,
+  input                   spi_miso,
+  output                  start_n,
+  output                  sync_adc_mosi,
+  input                   sync_adc_miso,
+  input                   alert,
+  output                  sdp_convst,
+  output                  sdp_mclk,
+  output                  reset_n,
+  inout                   gpio0,
+  inout                   gpio1,
+  inout                   gpio2);
 
   // internal signals
 
@@ -159,29 +153,33 @@ module system_top (
 
   // instantiations
 
-  // unused
-  assign gpio_i[63:42] = gpio_o[63:42];
-  assign gpio_i[37] = gpio_o[37];
+   // adc control gpio assign
+  
+  assign gpio_i[32] = alert;
+  assign start_n    = gpio_o[33];
+  assign sdp_convst = gpio_o[34];
+  assign sdp_mclk   = gpio_o[35];
+  assign reset_n    = gpio_o[39];
 
-  // GPIO outputs
-  assign ltc2308_cs = gpio_o[41];
-  assign cn0540_blue_led = gpio_o[40];
-  assign cn0540_yellow_led = gpio_o[39];
-  assign cn0540_shutdown = gpio_o[36];
-  assign cn0540_drdy_aux = gpio_o[35];
-  assign cn0540_sync_in = gpio_o[33];
-  assign cn0540_csb_aux = gpio_o[34];
-  assign cn0540_reset_adc = gpio_o[32];
+  assign gpio_i[63:39] = gpio_o[63:39];
+  assign gpio_i[35:33] = gpio_o[35:33];
+  assign gpio_i[31:15] = gpio_o[31:15];
 
+  // bd gpio
+  assign gpio_i[13:8] = gpio_bd_i[5:0];
   assign gpio_bd_o[7:0] = gpio_o[7:0];
 
-  // GPIO inputs
-  assign gpio_i[38] = cn0540_sw_ff;
+  //adc gpio assign 
+  ALT_IOBUF iobuf_gpio_chip (
+    .i(gpio_o[38:36]),
+    .oe(gpio_t[38:36]),
+    .o(gpio_i[38:36]),
+    .io({
+             gpio2,        //38
+             gpio1,        //37
+             gpio0}));     //36
 
-  assign gpio_i[31:14] = gpio_o[31:14];
-  assign gpio_i[13:8] = gpio_bd_i[5:0];
-
-
+ 
   // IO Buffers for I2C
 
   ALT_IOBUF scl_iobuf (
@@ -189,12 +187,6 @@ module system_top (
     .oe(i2c1_scl_oe),
     .o(i2c1_scl),
     .io(i2c_scl));
-
-  ALT_IOBUF sda_iobuf (
-    .i(1'b0),
-    .oe(i2c1_sda_oe),
-    .o(i2c1_sda),
-    .io(i2c_sda));
 
   ALT_IOBUF scl_video_iobuf (
     .i(1'b0),
@@ -279,19 +271,15 @@ module system_top (
     .sys_gpio_bd_out_port (gpio_o[31:0]),
     .sys_gpio_in_export (gpio_i[63:32]),
     .sys_gpio_out_export (gpio_o[63:32]),
-    .cn0540_spi_sdo_sdo (cn0540_spi_mosi),
-    .cn0540_spi_sdi_sdi (cn0540_spi_miso),
-    .cn0540_spi_cs_cs (cn0540_spi_cs),
-    .cn0540_spi_sclk_clk (cn0540_spi_sclk),
-    .cn0540_spi_trigger_trigger (cn0540_drdy),
-    .sys_spi_MISO (1'b0),
-    .sys_spi_MOSI (),
-    .sys_spi_SCLK (),
-    .sys_spi_SS_n (),
-    .ltc2308_spi_MISO (ltc2308_miso),
-    .ltc2308_spi_MOSI (ltc2308_mosi),
-    .ltc2308_spi_SCLK (ltc2308_sclk),
-    .ltc2308_spi_SS_n (),
+    .sys_spi_MISO (spi_miso),
+    .sys_spi_MOSI (spi_mosi),
+    .sys_spi_SCLK (spi_clk),
+    .sys_spi_SS_n (spi_csn),
+    .axi_ad77x_adc_if_adc_clk_in(adc_clk_in),
+    .axi_ad77x_adc_if_adc_ready(adc_ready_in),
+    .axi_ad77x_adc_if_adc_data_in(adc_data_in),
+    .axi_ad77x_adc_if_sync_adc_mosi(sync_adc_mosi), 
+    .axi_ad77x_adc_if_sync_adc_miso(sync_adc_miso),
     .axi_hdmi_tx_0_hdmi_if_h_clk (hdmi_out_clk),
     .axi_hdmi_tx_0_hdmi_if_h24_hsync (hdmi_hsync),
     .axi_hdmi_tx_0_hdmi_if_h24_vsync (hdmi_vsync),
