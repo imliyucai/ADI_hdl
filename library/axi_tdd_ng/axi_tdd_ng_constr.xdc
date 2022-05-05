@@ -11,6 +11,10 @@ set_false_path \
   -to [get_cells -hierarchical * -filter {NAME=~*i_counter/tdd_delay_done_reg}]
 
 set_false_path \
+  -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/up_tdd_startup_delay_reg[*]}] \
+  -to [get_cells -hierarchical * -filter {NAME=~*i_counter/tdd_delay_skip_reg}]
+
+set_false_path \
   -from [get_cells -hierarchical * -filter {NAME=~*i_regmap/up_tdd_frame_length_reg[*]}] \
   -to [get_cells -hierarchical * -filter {NAME=~*i_counter/tdd_endof_frame_reg}]
 

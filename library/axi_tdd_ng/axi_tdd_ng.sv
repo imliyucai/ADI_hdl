@@ -64,38 +64,38 @@ module axi_tdd_ng #(
   parameter         SYNC_EXTERNAL_CDC = 0,
   parameter         SYNC_COUNT_WIDTH = 64) (
 
-  input  logic         clk,
-  input  logic         resetn,
+  input  logic                     clk,
+  input  logic                     resetn,
 
   // sync signal
-  input  logic         sync_in,
-  output logic         sync_out,
+  input  logic                     sync_in,
+  output logic                     sync_out,
 
   // output channels
   output logic [CHANNEL_COUNT-1:0] tdd_channel,
 
   // AXI BUS
-  input  logic         s_axi_aresetn,
-  input  logic         s_axi_aclk,
-  input  logic         s_axi_awvalid,
-  input  logic [15:0]  s_axi_awaddr,
-  input  logic [ 2:0]  s_axi_awprot,
-  output logic         s_axi_awready,
-  input  logic         s_axi_wvalid,
-  input  logic [31:0]  s_axi_wdata,
-  input  logic [ 3:0]  s_axi_wstrb,
-  output logic         s_axi_wready,
-  output logic         s_axi_bvalid,
-  output logic [ 1:0]  s_axi_bresp,
-  input  logic         s_axi_bready,
-  input  logic         s_axi_arvalid,
-  input  logic [15:0]  s_axi_araddr,
-  input  logic [ 2:0]  s_axi_arprot,
-  output logic         s_axi_arready,
-  output logic         s_axi_rvalid,
-  output logic [ 1:0]  s_axi_rresp,
-  output logic [31:0]  s_axi_rdata,
-  input  logic         s_axi_rready);
+  input  logic                     s_axi_aresetn,
+  input  logic                     s_axi_aclk,
+  input  logic                     s_axi_awvalid,
+  input  logic [15:0]              s_axi_awaddr,
+  input  logic [ 2:0]              s_axi_awprot,
+  output logic                     s_axi_awready,
+  input  logic                     s_axi_wvalid,
+  input  logic [31:0]              s_axi_wdata,
+  input  logic [ 3:0]              s_axi_wstrb,
+  output logic                     s_axi_wready,
+  output logic                     s_axi_bvalid,
+  output logic [ 1:0]              s_axi_bresp,
+  input  logic                     s_axi_bready,
+  input  logic                     s_axi_arvalid,
+  input  logic [15:0]              s_axi_araddr,
+  input  logic [ 2:0]              s_axi_arprot,
+  output logic                     s_axi_arready,
+  output logic                     s_axi_rvalid,
+  output logic [ 1:0]              s_axi_rresp,
+  output logic [31:0]              s_axi_rdata,
+  input  logic                     s_axi_rready);
 
   // package import
   import axi_tdd_ng_pkg::*;
@@ -123,18 +123,18 @@ module axi_tdd_ng #(
   logic                         tdd_sync_soft;
 
   // Config wires
-  logic [CHANNEL_COUNT-1:0]     tdd_channel_en;
-  logic [CHANNEL_COUNT-1:0]     tdd_channel_pol;
-  logic [BURST_COUNT_WIDTH-1:0] tdd_burst_count;
-  logic [REGISTER_WIDTH-1:0]    tdd_startup_delay;
-  logic [REGISTER_WIDTH-1:0]    tdd_frame_length;
+  logic [BURST_COUNT_WIDTH-1:0] asy_tdd_burst_count;
+  logic [REGISTER_WIDTH-1:0]    asy_tdd_startup_delay;
+  logic [REGISTER_WIDTH-1:0]    asy_tdd_frame_length;
 
   // Synchronization config
   logic [SYNC_COUNT_WIDTH-1:0]  tdd_sync_period;
 
   // Channel config
-  logic [REGISTER_WIDTH-1:0]    tdd_channel_on  [0:CHANNEL_COUNT-1];
-  logic [REGISTER_WIDTH-1:0]    tdd_channel_off [0:CHANNEL_COUNT-1];
+  logic [CHANNEL_COUNT-1:0]     tdd_channel_en;
+  logic [CHANNEL_COUNT-1:0]     asy_tdd_channel_pol;
+  logic [REGISTER_WIDTH-1:0]    asy_tdd_channel_on  [0:CHANNEL_COUNT-1];
+  logic [REGISTER_WIDTH-1:0]    asy_tdd_channel_off [0:CHANNEL_COUNT-1];
 
   // Current counter value
   logic  [REGISTER_WIDTH-1:0]   tdd_counter;
@@ -157,67 +157,67 @@ module axi_tdd_ng #(
     .SYNC_EXTERNAL_CDC (SYNC_EXTERNAL_CDC),
     .SYNC_COUNT_WIDTH  (SYNC_COUNT_WIDTH)
   ) i_regmap (
-    .up_rstn              (up_rstn),
-    .up_clk               (up_clk),
+    .up_rstn               (up_rstn),
+    .up_clk                (up_clk),
 
-    .up_wreq              (up_wreq),
-    .up_waddr             (up_waddr),
-    .up_wdata             (up_wdata),
-    .up_wack              (up_wack),
-    .up_rreq              (up_rreq),
-    .up_raddr             (up_raddr),
-    .up_rdata             (up_rdata),
-    .up_rack              (up_rack),
+    .up_wreq               (up_wreq),
+    .up_waddr              (up_waddr),
+    .up_wdata              (up_wdata),
+    .up_wack               (up_wack),
+    .up_rreq               (up_rreq),
+    .up_raddr              (up_raddr),
+    .up_rdata              (up_rdata),
+    .up_rack               (up_rack),
 
-    .tdd_clk              (clk),
-    .tdd_resetn           (resetn),
+    .tdd_clk               (clk),
+    .tdd_resetn            (resetn),
 
-    .tdd_cstate           (tdd_cstate),
+    .tdd_cstate            (tdd_cstate),
 
-    .tdd_enable           (tdd_enable),
+    .tdd_enable            (tdd_enable),
 
-    .tdd_channel_en       (tdd_channel_en),
-    .tdd_channel_pol      (tdd_channel_pol),
+    .tdd_channel_en        (tdd_channel_en),
+    .asy_tdd_channel_pol   (asy_tdd_channel_pol),
 
-    .tdd_burst_count      (tdd_burst_count),
-    .tdd_startup_delay    (tdd_startup_delay),
-    .tdd_frame_length     (tdd_frame_length),
+    .asy_tdd_burst_count   (asy_tdd_burst_count),
+    .asy_tdd_startup_delay (asy_tdd_startup_delay),
+    .asy_tdd_frame_length  (asy_tdd_frame_length),
 
-    .tdd_channel_on       (tdd_channel_on),
-    .tdd_channel_off      (tdd_channel_off),
+    .asy_tdd_channel_on    (asy_tdd_channel_on),
+    .asy_tdd_channel_off   (asy_tdd_channel_off),
 
-    .tdd_sync_period      (tdd_sync_period),
-    .tdd_sync_rst         (tdd_sync_rst),
-    .tdd_sync_int         (tdd_sync_int),
-    .tdd_sync_ext         (tdd_sync_ext),
-    .tdd_sync_soft        (tdd_sync_soft)
+    .tdd_sync_period       (tdd_sync_period),
+    .tdd_sync_rst          (tdd_sync_rst),
+    .tdd_sync_int          (tdd_sync_int),
+    .tdd_sync_ext          (tdd_sync_ext),
+    .tdd_sync_soft         (tdd_sync_soft)
   );
 
   axi_tdd_ng_counter #(
-    .REGISTER_WIDTH (REGISTER_WIDTH),
+    .REGISTER_WIDTH    (REGISTER_WIDTH),
     .BURST_COUNT_WIDTH (BURST_COUNT_WIDTH)
   ) i_counter (
-    .clk               (clk),
-    .resetn            (resetn),
+    .clk                   (clk),
+    .resetn                (resetn),
 
-    .tdd_enable        (tdd_enable),
-    .tdd_sync_rst      (tdd_sync_rst),
-    .tdd_sync          (sync_out),
+    .tdd_enable            (tdd_enable),
+    .tdd_sync_rst          (tdd_sync_rst),
+    .tdd_sync              (sync_out),
 
-    .tdd_burst_count   (tdd_burst_count),
-    .tdd_startup_delay (tdd_startup_delay),
-    .tdd_frame_length  (tdd_frame_length),
+    .asy_tdd_burst_count   (asy_tdd_burst_count),
+    .asy_tdd_startup_delay (asy_tdd_startup_delay),
+    .asy_tdd_frame_length  (asy_tdd_frame_length),
 
-    .tdd_counter       (tdd_counter),
-    .tdd_cstate        (tdd_cstate),
-    .tdd_endof_frame   (tdd_endof_frame)
+    .tdd_counter           (tdd_counter),
+    .tdd_cstate            (tdd_cstate),
+    .tdd_endof_frame       (tdd_endof_frame)
   );
 
   axi_tdd_ng_sync_gen #(
-    .SYNC_INTERNAL (SYNC_INTERNAL),
-    .SYNC_EXTERNAL (SYNC_EXTERNAL),
+    .SYNC_INTERNAL     (SYNC_INTERNAL),
+    .SYNC_EXTERNAL     (SYNC_EXTERNAL),
     .SYNC_EXTERNAL_CDC (SYNC_EXTERNAL_CDC),
-    .SYNC_COUNT_WIDTH (SYNC_COUNT_WIDTH)
+    .SYNC_COUNT_WIDTH  (SYNC_COUNT_WIDTH)
   ) i_sync_gen (
     .clk              (clk),
     .resetn           (resetn),
@@ -237,7 +237,7 @@ module axi_tdd_ng #(
     for (i = 0; i < CHANNEL_COUNT; i=i+1) begin
       axi_tdd_ng_channel #(
         .DEFAULT_POLARITY (DEFAULT_POLARITY[i]),
-        .REGISTER_WIDTH (REGISTER_WIDTH)
+        .REGISTER_WIDTH   (REGISTER_WIDTH)
       ) i_channel (
         .clk             (clk),
         .resetn          (resetn),
@@ -248,9 +248,9 @@ module axi_tdd_ng #(
         .tdd_endof_frame (tdd_endof_frame),
 
         .ch_en           (tdd_channel_en[i]),
-        .ch_pol          (tdd_channel_pol[i]),
-        .t_high          (tdd_channel_on[i]),
-        .t_low           (tdd_channel_off[i]),
+        .asy_ch_pol      (asy_tdd_channel_pol[i]),
+        .asy_t_high      (asy_tdd_channel_on[i]),
+        .asy_t_low       (asy_tdd_channel_off[i]),
 
         .out             (tdd_channel[i])
         );

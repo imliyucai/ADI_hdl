@@ -7,6 +7,10 @@ set_false_path \
   -to [get_registers {*|i_counter|tdd_delay_done}]
 
 set_false_path \
+  -from [get_registers {*|i_regmap|up_tdd_startup_delay[*]}] \
+  -to [get_registers {*|i_counter|tdd_delay_skip}]
+
+set_false_path \
   -from [get_registers {*|i_regmap|up_tdd_frame_length[*]}] \
   -to [get_registers {*|i_counter|tdd_endof_frame}]
 

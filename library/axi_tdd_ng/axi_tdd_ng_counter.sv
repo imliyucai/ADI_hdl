@@ -45,9 +45,9 @@ module axi_tdd_ng_counter #(
   input  logic                         tdd_sync_rst,
   input  logic                         tdd_sync,
 
-  input  logic [BURST_COUNT_WIDTH-1:0] tdd_burst_count,
-  input  logic [REGISTER_WIDTH-1:0]    tdd_startup_delay,
-  input  logic [REGISTER_WIDTH-1:0]    tdd_frame_length,
+  input  logic [BURST_COUNT_WIDTH-1:0] asy_tdd_burst_count,
+  input  logic [REGISTER_WIDTH-1:0]    asy_tdd_startup_delay,
+  input  logic [REGISTER_WIDTH-1:0]    asy_tdd_frame_length,
 
   output logic [REGISTER_WIDTH-1:0]    tdd_counter,
   output axi_tdd_ng_pkg::state_t       tdd_cstate,
@@ -59,6 +59,7 @@ module axi_tdd_ng_counter #(
   // internal registers/wires
   logic [BURST_COUNT_WIDTH-1:0] tdd_burst_counter;
   logic                         tdd_delay_done;
+  logic                         tdd_delay_skip;
   logic                         tdd_endof_burst;
   logic                         tdd_last_burst;
   state_t                       tdd_cstate_ns;
@@ -70,6 +71,7 @@ module axi_tdd_ng_counter #(
     tdd_cstate = IDLE;
     tdd_cstate_ns = IDLE;
     tdd_delay_done = 1'b0;
+    tdd_delay_skip = 1'b0;
     tdd_endof_frame = 1'b0;
     tdd_last_burst = 1'b0;
   end
@@ -105,7 +107,7 @@ module axi_tdd_ng_counter #(
 
       ARMED : begin
         if (tdd_sync == 1'b1) begin
-          tdd_cstate_ns = WAITING;
+          tdd_cstate_ns = (tdd_delay_skip == 1'b1) ? RUNNING : WAITING;
         end
       end
 
@@ -129,7 +131,7 @@ module axi_tdd_ng_counter #(
       tdd_delay_done <= 1'b0;
     end else begin
       if (enable) begin
-        if (tdd_counter == (tdd_startup_delay - 1'b1)) begin
+        if (tdd_counter == (asy_tdd_startup_delay - 1'b1)) begin
           tdd_delay_done <= 1'b1;
         end else begin
           tdd_delay_done <= 1'b0;
@@ -140,10 +142,24 @@ module axi_tdd_ng_counter #(
 
   always @(posedge clk) begin
     if (resetn == 1'b0) begin
+      tdd_delay_skip <= 1'b0;
+    end else begin
+      if (enable) begin
+        if (asy_tdd_startup_delay == 0) begin
+          tdd_delay_skip <= 1'b1;
+        end else begin
+          tdd_delay_skip <= 1'b0;
+        end
+      end
+    end
+  end
+
+  always @(posedge clk) begin
+    if (resetn == 1'b0) begin
       tdd_endof_frame <= 1'b0;
     end else begin
       if (enable) begin
-        if (tdd_counter == (tdd_frame_length - 1'b1)) begin
+        if (tdd_counter == (asy_tdd_frame_length - 1'b1)) begin
           tdd_endof_frame <= 1'b1;
         end else begin
           tdd_endof_frame <= 1'b0;
@@ -184,7 +200,7 @@ module axi_tdd_ng_counter #(
     end else begin
       if (enable) begin
         if (tdd_cstate == ARMED) begin
-          tdd_burst_counter <= tdd_burst_count;
+          tdd_burst_counter <= asy_tdd_burst_count;
         end else begin
           if ((tdd_cstate == RUNNING) && (tdd_burst_counter != 0) && (tdd_endof_frame == 1'b1)) begin
             tdd_burst_counter <= tdd_burst_counter - 1'b1;

@@ -47,9 +47,9 @@ module axi_tdd_ng_channel #(
   input  logic                      tdd_endof_frame,
 
   input  logic                      ch_en,
-  input  logic                      ch_pol,
-  input  logic [REGISTER_WIDTH-1:0] t_high,
-  input  logic [REGISTER_WIDTH-1:0] t_low,
+  input  logic                      asy_ch_pol,
+  input  logic [REGISTER_WIDTH-1:0] asy_t_high,
+  input  logic [REGISTER_WIDTH-1:0] asy_t_low,
 
   output logic                      out);
 
@@ -93,7 +93,7 @@ module axi_tdd_ng_channel #(
       tdd_ch_set <= 1'b0;
     end else begin
       if (enable) begin
-        if ((tdd_cstate == RUNNING) && (tdd_counter == t_high)) begin
+        if ((tdd_cstate == RUNNING) && (tdd_counter == asy_t_high)) begin
           tdd_ch_set <= 1'b1;
         end else begin
           tdd_ch_set <= 1'b0;
@@ -107,7 +107,7 @@ module axi_tdd_ng_channel #(
       tdd_ch_rst <= 1'b0;
     end else begin
       if (enable) begin
-        if (((tdd_cstate == RUNNING) && (tdd_counter == t_low)) || (tdd_endof_frame == 1'b1)) begin
+        if (((tdd_cstate == RUNNING) && (tdd_counter == asy_t_low)) || (tdd_endof_frame == 1'b1)) begin
           tdd_ch_rst <= 1'b1;
         end else begin
           tdd_ch_rst <= 1'b0;
@@ -122,10 +122,10 @@ module axi_tdd_ng_channel #(
     end else begin
       if (enable) begin
         if ((tdd_ch_en == 1'b0) || (tdd_ch_rst == 1'b1)) begin
-          out <= ch_pol;
+          out <= asy_ch_pol;
         end else begin
           if (tdd_ch_set == 1'b1) begin
-            out <= ~ch_pol;
+            out <= ~asy_ch_pol;
           end else begin
             out <= out;
           end

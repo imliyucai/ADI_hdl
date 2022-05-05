@@ -53,12 +53,12 @@ module axi_tdd_ng_regmap #(
   input  axi_tdd_ng_pkg::state_t       tdd_cstate,
   output logic                         tdd_enable,
   output logic [CHANNEL_COUNT-1:0]     tdd_channel_en,
-  output logic [CHANNEL_COUNT-1:0]     tdd_channel_pol,
-  output logic [BURST_COUNT_WIDTH-1:0] tdd_burst_count,
-  output logic [REGISTER_WIDTH-1:0]    tdd_startup_delay,
-  output logic [REGISTER_WIDTH-1:0]    tdd_frame_length,
-  output logic [REGISTER_WIDTH-1:0]    tdd_channel_on  [0:CHANNEL_COUNT-1],
-  output logic [REGISTER_WIDTH-1:0]    tdd_channel_off [0:CHANNEL_COUNT-1],
+  output logic [CHANNEL_COUNT-1:0]     asy_tdd_channel_pol,
+  output logic [BURST_COUNT_WIDTH-1:0] asy_tdd_burst_count,
+  output logic [REGISTER_WIDTH-1:0]    asy_tdd_startup_delay,
+  output logic [REGISTER_WIDTH-1:0]    asy_tdd_frame_length,
+  output logic [REGISTER_WIDTH-1:0]    asy_tdd_channel_on  [0:CHANNEL_COUNT-1],
+  output logic [REGISTER_WIDTH-1:0]    asy_tdd_channel_off [0:CHANNEL_COUNT-1],
   output logic [SYNC_COUNT_WIDTH-1:0]  tdd_sync_period,
   output logic                         tdd_sync_rst,
   output logic                         tdd_sync_int,
@@ -431,12 +431,12 @@ module axi_tdd_ng_regmap #(
   // skipping the CDC for the rest of the registers since the register writes are gated with module enable
   // furthermore, updating the async domain registers is also conditioned by the synchronized module enable
 
-  assign tdd_burst_count = up_tdd_burst_count;
-  assign tdd_startup_delay = up_tdd_startup_delay;
-  assign tdd_frame_length = up_tdd_frame_length;
-  assign tdd_channel_pol  = up_tdd_channel_pol;
-  assign tdd_channel_on  = up_tdd_channel_on;
-  assign tdd_channel_off = up_tdd_channel_off;
+  assign asy_tdd_burst_count = up_tdd_burst_count;
+  assign asy_tdd_startup_delay = up_tdd_startup_delay;
+  assign asy_tdd_frame_length = up_tdd_frame_length;
+  assign asy_tdd_channel_pol  = up_tdd_channel_pol;
+  assign asy_tdd_channel_on  = up_tdd_channel_on;
+  assign asy_tdd_channel_off = up_tdd_channel_off;
 
 endmodule
 
