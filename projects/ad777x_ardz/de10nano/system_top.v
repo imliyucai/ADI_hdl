@@ -140,7 +140,7 @@ module system_top (
   wire             sys_resetn;
   wire    [63:0]   gpio_i;
   wire    [63:0]   gpio_o;
-
+  wire    [63:0]   gpio_t;
   wire             i2c1_scl;
   wire             i2c1_scl_oe;
   wire             i2c1_sda;
@@ -275,7 +275,7 @@ module system_top (
     .sys_spi_MOSI (spi_mosi),
     .sys_spi_SCLK (spi_clk),
     .sys_spi_SS_n (spi_csn),
-    .axi_ad77x_adc_if_adc_clk_in(adc_clk_in),
+    .axi_ad77x_adc_clk_if(adc_clk_in),
     .axi_ad77x_adc_if_adc_ready(adc_ready_in),
     .axi_ad77x_adc_if_adc_data_in(adc_data_in),
     .axi_ad77x_adc_if_sync_adc_mosi(sync_adc_mosi), 

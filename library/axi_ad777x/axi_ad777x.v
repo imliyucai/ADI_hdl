@@ -53,6 +53,14 @@ module axi_ad777x #(
   output          adc_enable_5,
   output          adc_enable_6,
   output          adc_enable_7,
+  output          adc_valid_0,
+  output          adc_valid_1,
+  output          adc_valid_2,
+  output          adc_valid_3,
+  output          adc_valid_4,
+  output          adc_valid_5,
+  output          adc_valid_6,
+  output          adc_valid_7,
   output  [31:0]  adc_data_0,
   output  [31:0]  adc_data_1,
   output  [31:0]  adc_data_2,
@@ -125,13 +133,21 @@ module axi_ad777x #(
   assign adc_reset = adc_rst_s;
  
   assign adc_enable_0 = adc_enable[0];
-  assign adc_enable_1 = adc_enable[1];
+  assign adc_enable_1 = adc_enable[1]; 
   assign adc_enable_2 = adc_enable[2];
   assign adc_enable_3 = adc_enable[3];
   assign adc_enable_4 = adc_enable[4];
   assign adc_enable_5 = adc_enable[5];
   assign adc_enable_6 = adc_enable[6];
   assign adc_enable_7 = adc_enable[7];
+  assign adc_valid_0  = adc_valid;
+  assign adc_valid_1  = adc_valid;
+  assign adc_valid_2  = adc_valid;
+  assign adc_valid_3  = adc_valid;
+  assign adc_valid_4  = adc_valid;
+  assign adc_valid_5  = adc_valid;
+  assign adc_valid_6  = adc_valid;
+  assign adc_valid_7  = adc_valid;
   assign adc_crc_ch_mismatch = adc_crc_err;
 
   integer j;
@@ -163,7 +179,7 @@ module axi_ad777x #(
   
   generate
     genvar i;
-    for (i = 0; i < 8; i=i+1) begin
+    for (i = 0; i < 8; i=i+1) begin : ad777x_channels
       up_adc_channel #(
         .CHANNEL_ID(i)
       ) i_up_adc_channel (

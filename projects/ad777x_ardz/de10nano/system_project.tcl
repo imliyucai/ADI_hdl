@@ -40,10 +40,10 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi_miso
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi_clk      
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sdp_mclk     
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_ready_in 
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[0
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[1
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[2
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[3
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_data_in[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to start_n      
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to reset_n      
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sdp_convst   
