@@ -10,6 +10,7 @@ M_DEPS += ../common/ad777x_ardz_qsys.tcl
 M_DEPS += ../../common/de10nano/de10nano_system_qsys.tcl
 M_DEPS += ../../common/de10nano/de10nano_system_assign.tcl
 
+LIB_DEPS += axi_ad777x
 LIB_DEPS += axi_dmac
 LIB_DEPS += axi_hdmi_tx
 LIB_DEPS += util_pack/util_cpack2
