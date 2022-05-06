@@ -42,26 +42,18 @@ add_interface_port adc_if  data_in         adc_data_in     Input  4
 add_interface_port adc_if  sync_adc_miso   sync_adc_miso   Input  1
 add_interface_port adc_if  sync_adc_mosi   sync_adc_mosi   Output 1
 
-ad_interface signal adc_enable_0        output 1
-ad_interface signal adc_enable_1        output 1
-ad_interface signal adc_enable_2        output 1
-ad_interface signal adc_enable_3        output 1
-ad_interface signal adc_enable_4        output 1
-ad_interface signal adc_enable_5        output 1
-ad_interface signal adc_enable_6        output 1
-ad_interface signal adc_enable_7        output 1
-ad_interface signal adc_data_0          output 32   
-ad_interface signal adc_data_1          output 32
-ad_interface signal adc_data_2          output 32
-ad_interface signal adc_data_3          output 32
-ad_interface signal adc_data_4          output 32
-ad_interface signal adc_data_5          output 32
-ad_interface signal adc_data_6          output 32
-ad_interface signal adc_data_7          output 32
 ad_interface clock  adc_clk             output 1
 ad_interface reset  adc_reset           output 1 
 ad_interface signal adc_valid           output 1
 ad_interface signal adc_crc_ch_mismatch output 8 
+
+for {set i 0} {$i < 4} {incr i} {
+  add_interface adc_ch_$i conduit end
+  add_interface_port adc_enable_$i adc_enable_$i enable Output 1
+  add_interface_port adc_data_$i dac_valid_$i data Input 32
+  set_interface_property adc_ch_$i associatedClock clk_in
+  set_interface_property adc_ch_$i associatedReset none
+}
 
 set_interface_property if_rst associatedResetSinks s_axi_reset
 
