@@ -24,11 +24,7 @@ ad_ip_files axi_ad777x [list\
   axi_ad777x_if.v \
   axi_ad777x.v ]
 
-  #parameters 
-
-  adi_add_auto_fpga_spec_params
-
-  ad_ip_intf_s_axi s_axi_aclk s_axi_aresetn
+ad_ip_intf_s_axi s_axi_aclk s_axi_aresetn 15
 
   # adc clock  interface
 
@@ -42,22 +38,25 @@ add_interface_port adc_if  data_in         adc_data_in     Input  4
 add_interface_port adc_if  sync_adc_miso   sync_adc_miso   Input  1
 add_interface_port adc_if  sync_adc_mosi   sync_adc_mosi   Output 1
 
+
+
 ad_interface clock  adc_clk             output 1
 ad_interface reset  adc_reset           output 1 
-ad_interface signal adc_valid           output 1
+set_interface_property adc_reset associatedClock clk_in
 ad_interface signal adc_crc_ch_mismatch output 8 
+ad_interface signal adc_dovf            input  1
 
-for {set i 0} {$i < 4} {incr i} {
+for {set i 0} {$i < 8} {incr i} {
   add_interface adc_ch_$i conduit end
-  add_interface_port adc_enable_$i adc_enable_$i enable Output 1
-  add_interface_port adc_data_$i dac_valid_$i data Input 32
-  set_interface_property adc_ch_$i associatedClock clk_in
-  set_interface_property adc_ch_$i associatedReset none
+  add_interface_port adc_ch_$i adc_enable_$i enable Output 1
+  set_port_property adc_enable_$i fragment_list [format "adc_enable(%d:%d)" $i $i]
+  add_interface_port adc_ch_$i adc_data_$i data Output 32
+   set_port_property adc_data_$i fragment_list [format "adc_data(%d:%d)" \
+    [expr ($i+1)  * 32 ] [expr $i * 32]]
+  add_interface_port adc_ch_$i adc_valid valid Output 1
+  set_port_property adc_valid fragment_list [format "adc_valid(%d)" $i]
+  
+  set_interface_property adc_ch_$i associatedClock if_adc_clk 
+  set_interface_property adc_ch_$i associatedReset "" 
 }
-
-set_interface_property if_rst associatedResetSinks s_axi_reset
-
-
-
-
 
